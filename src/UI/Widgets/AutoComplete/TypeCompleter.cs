@@ -44,7 +44,7 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
 
         readonly List<Suggestion> loadingSuggestions = new()
         {
-            new("<color=grey>Loading...</color>", "")
+            new("<color=#9F9F9F>Loading...</color>", "")
         };
 
         bool ISuggestionProvider.AllowNavigation => false;

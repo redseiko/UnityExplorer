@@ -48,7 +48,7 @@ namespace UnityExplorer.CacheObject
         public abstract bool HasArguments { get; }
         public abstract bool CanWrite { get; }
 
-        protected const string NOT_YET_EVAL = "<color=grey>Not yet evaluated</color>";
+        protected const string NOT_YET_EVAL = "<color=#9F9F9F>Not yet evaluated</color>";
 
         public virtual void SetFallbackType(Type fallbackType)
         {
@@ -321,7 +321,7 @@ namespace UnityExplorer.CacheObject
             if (args.valueActive)
             {
                 cell.ValueLabel.text = ValueLabelText;
-                cell.ValueLabel.supportRichText = args.valueRichText;
+                cell.ValueLabel.richText = args.valueRichText;
                 cell.ValueLabel.color = args.valueColor;
             }
             else

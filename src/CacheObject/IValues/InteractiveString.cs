@@ -117,7 +117,7 @@ namespace UnityExplorer.CacheObject.IValues
             inputField = UIFactory.CreateInputField(UIRoot, "InputField", "empty");
             inputField.UIRoot.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             UIFactory.SetLayoutElement(inputField.UIRoot, minHeight: 25, flexibleHeight: 500, flexibleWidth: 9999);
-            inputField.Component.lineType = InputField.LineType.MultiLineNewline;
+            inputField.Component.lineType = TMPro.TMP_InputField.LineType.MultiLineNewline;
             inputField.OnValueChanged += OnInputChanged;
 
             return UIRoot;

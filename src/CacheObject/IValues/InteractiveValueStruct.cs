@@ -183,7 +183,7 @@ namespace UnityExplorer.CacheObject.IValues
             ContentSizeFitter fitter = input.UIRoot.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-            input.Component.lineType = InputField.LineType.MultiLineNewline;
+            input.Component.lineType = TMPro.TMP_InputField.LineType.MultiLineNewline;
             inputFields.Add(input);
         }
 

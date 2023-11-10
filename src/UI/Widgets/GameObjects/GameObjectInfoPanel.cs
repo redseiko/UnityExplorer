@@ -293,14 +293,14 @@ namespace UnityExplorer.UI.Widgets
             PathInput.Component.textComponent.color = Color.grey;
             PathInput.Component.textComponent.fontSize = 14;
             UIFactory.SetLayoutElement(PathInput.UIRoot, minHeight: 25, minWidth: 100, flexibleWidth: 9999);
-            PathInput.Component.lineType = InputField.LineType.MultiLineSubmit;
+            PathInput.Component.lineType = TMPro.TMP_InputField.LineType.MultiLineNewline;
 
             ButtonRef copyButton = UIFactory.CreateButton(firstRow, "CopyButton", "Copy to Clipboard", new Color(0.2f, 0.2f, 0.2f, 1));
             copyButton.ButtonText.color = Color.yellow;
             UIFactory.SetLayoutElement(copyButton.Component.gameObject, minHeight: 25, minWidth: 120);
             copyButton.OnClick += OnCopyClicked;
 
-            PathInput.Component.GetOnEndEdit().AddListener((string val) => { OnPathEndEdit(val); });
+            PathInput.Component.onEndEdit.AddListener((string val) => { OnPathEndEdit(val); });
 
             // Title and update row
 
@@ -316,7 +316,7 @@ namespace UnityExplorer.UI.Widgets
             NameInput = UIFactory.CreateInputField(titleRow, "NameInput", "untitled");
             UIFactory.SetLayoutElement(NameInput.Component.gameObject, minHeight: 30, minWidth: 100, flexibleWidth: 9999);
             NameInput.Component.textComponent.fontSize = 15;
-            NameInput.Component.GetOnEndEdit().AddListener((string val) => { OnNameEndEdit(val); });
+            NameInput.Component.onEndEdit.AddListener((string val) => { OnNameEndEdit(val); });
 
             // second row (toggles, instanceID, tag, buttons)
 
@@ -353,7 +353,7 @@ namespace UnityExplorer.UI.Widgets
             TagInput = UIFactory.CreateInputField(secondRow, "TagInput", "none");
             UIFactory.SetLayoutElement(TagInput.Component.gameObject, minHeight: 25, minWidth: 100, flexibleWidth: 999);
             TagInput.Component.textComponent.color = Color.white;
-            TagInput.Component.GetOnEndEdit().AddListener((string val) => { OnTagEndEdit(val); });
+            TagInput.Component.onEndEdit.AddListener((string val) => { OnTagEndEdit(val); });
 
             // Instantiate
             ButtonRef instantiateBtn = UIFactory.CreateButton(secondRow, "InstantiateBtn", "Instantiate", new Color(0.2f, 0.2f, 0.2f));

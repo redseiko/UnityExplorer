@@ -211,7 +211,7 @@ namespace UnityExplorer.ObjectExplorer
                 new Color(0.08f, 0.08f, 0.08f));
             UIFactory.SetLayoutElement(inputField.UIRoot, minHeight: 25);
             //inputField.OnValueChanged += OnFilterInput;
-            inputField.Component.GetOnEndEdit().AddListener(OnFilterInput);
+            inputField.Component.onEndEdit.AddListener(OnFilterInput);
 
             // refresh row
 

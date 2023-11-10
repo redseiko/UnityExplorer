@@ -1,4 +1,7 @@
 ﻿using HarmonyLib;
+
+using TMPro;
+
 using UnityExplorer.CSConsole;
 using UnityExplorer.Runtime;
 using UnityExplorer.UI.Panels;
@@ -25,7 +28,7 @@ namespace UnityExplorer.Hooks
         // Add Hooks UI
         internal static GameObject AddHooksRoot;
         internal static ScrollPool<AddHookCell> AddHooksScrollPool;
-        internal static Text AddHooksLabel;
+        internal static TMP_Text AddHooksLabel;
         internal static InputFieldRef AddHooksMethodFilterInput;
         internal static InputFieldRef ClassSelectorInputField;
         internal static Type pendingGenericDefinition;
@@ -35,11 +38,11 @@ namespace UnityExplorer.Hooks
 
         // Hook Source Editor UI
         public static GameObject EditorRoot { get; private set; }
-        public static Text EditingHookLabel { get; private set; }
+        public static TMP_Text EditingHookLabel { get; private set; }
         public static InputFieldScroller EditorInputScroller { get; private set; }
         public static InputFieldRef EditorInput => EditorInputScroller.InputField;
-        public static Text EditorInputText { get; private set; }
-        public static Text EditorHighlightText { get; private set; }
+        public static TMP_Text EditorInputText { get; private set; }
+        public static TMP_Text EditorHighlightText { get; private set; }
 
         // ~~~~~~ New hook method selector ~~~~~~~
 
@@ -253,7 +256,7 @@ namespace UnityExplorer.Hooks
             UIFactory.SetLayoutElement(addButton.Component.gameObject, minWidth: 110, minHeight: 25);
             addButton.OnClick += () => { OnClassSelectedForHooks(ClassSelectorInputField.Text); };
 
-            AddHooksLabel = UIFactory.CreateLabel(AddHooksRoot, "AddLabel", "Choose a class to begin...", TextAnchor.MiddleCenter);
+            AddHooksLabel = UIFactory.CreateTMPLabel(AddHooksRoot, "AddLabel", "Choose a class to begin...", TextAlignmentOptions.Center);
             UIFactory.SetLayoutElement(AddHooksLabel.gameObject, minHeight: 30, minWidth: 100, flexibleWidth: 9999);
 
             AddHooksMethodFilterInput = UIFactory.CreateInputField(AddHooksRoot, "FilterInputField", "Filter method names...");
@@ -275,8 +278,8 @@ namespace UnityExplorer.Hooks
             UIFactory.SetLayoutElement(EditorRoot, flexibleHeight: 9999, flexibleWidth: 9999);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(EditorRoot, true, true, true, true, 2, 3, 3, 3, 3);
 
-            EditingHookLabel = UIFactory.CreateLabel(EditorRoot, "EditingHookLabel", "NOT SET", TextAnchor.MiddleCenter);
-            EditingHookLabel.fontStyle = FontStyle.Bold;
+            EditingHookLabel = UIFactory.CreateTMPLabel(EditorRoot, "EditingHookLabel", "NOT SET", TextAlignmentOptions.Center);
+            EditingHookLabel.fontStyle = FontStyles.Bold;
             UIFactory.SetLayoutElement(EditingHookLabel.gameObject, flexibleWidth: 9999, minHeight: 25);
 
             Text editorLabel = UIFactory.CreateLabel(EditorRoot,
@@ -304,7 +307,7 @@ namespace UnityExplorer.Hooks
             EditorInput.OnValueChanged += OnEditorInputChanged;
 
             EditorInputText = EditorInput.Component.textComponent;
-            EditorInputText.supportRichText = false;
+            EditorInputText.richText = false;
             EditorInputText.color = Color.clear;
             EditorInput.Component.customCaretColor = true;
             EditorInput.Component.caretColor = Color.white;
@@ -319,15 +322,15 @@ namespace UnityExplorer.Hooks
             highlightTextRect.offsetMin = Vector2.zero;
             highlightTextRect.offsetMax = Vector2.zero;
 
-            EditorHighlightText = highlightTextObj.AddComponent<Text>();
+            EditorHighlightText = highlightTextObj.AddComponent<TextMeshProUGUI>();
             EditorHighlightText.color = Color.white;
-            EditorHighlightText.supportRichText = true;
+            EditorHighlightText.richText = true;
             EditorHighlightText.fontSize = fontSize;
 
             // Set fonts
-            EditorInputText.font = UniversalUI.ConsoleFont;
-            EditorInput.PlaceholderText.font = UniversalUI.ConsoleFont;
-            EditorHighlightText.font = UniversalUI.ConsoleFont;
+            EditorInputText.font = UniversalUI.DefaultTMPFont;
+            EditorInput.PlaceholderText.font = UniversalUI.DefaultTMPFont;
+            EditorHighlightText.font = UniversalUI.DefaultTMPFont;
         }
     }
 }

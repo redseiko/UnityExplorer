@@ -1,4 +1,6 @@
-﻿using UniverseLib.UI;
+﻿using TMPro;
+
+using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ButtonList;
 
@@ -28,7 +30,7 @@ namespace UnityExplorer.UI.Widgets
 
             // Add mask to button so text doesnt overlap on Close button
             //this.Button.Component.gameObject.AddComponent<Mask>().showMaskGraphic = true;
-            this.Button.ButtonText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            this.Button.ButtonText.textWrappingMode = TextWrappingModes.Normal;
 
             // Behaviour toggle
 

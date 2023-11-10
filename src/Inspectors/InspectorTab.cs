@@ -1,4 +1,6 @@
-﻿using UniverseLib.UI;
+﻿using TMPro;
+
+using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.ObjectPool;
 
@@ -10,7 +12,7 @@ namespace UnityExplorer.Inspectors
         public float DefaultHeight => 25f;
 
         public ButtonRef TabButton;
-        public Text TabText;
+        public TMP_Text TabText;
         public ButtonRef CloseButton;
 
         private static readonly Color enabledTabColor = new(0.15f, 0.22f, 0.15f);
@@ -37,9 +39,9 @@ namespace UnityExplorer.Inspectors
 
             TabText = TabButton.ButtonText;
             UIFactory.SetLayoutElement(TabText.gameObject, minHeight: 25, minWidth: 150, flexibleWidth: 0);
-            TabText.alignment = TextAnchor.MiddleLeft;
-            TabText.fontSize = 12;
-            TabText.horizontalOverflow = HorizontalWrapMode.Overflow;
+            TabText.alignment = TextAlignmentOptions.Left;
+            TabText.fontSize = 12f;
+            TabText.textWrappingMode = TextWrappingModes.NoWrap;
 
             CloseButton = UIFactory.CreateButton(UIRoot, "CloseButton", "X", new Color(0.15f, 0.15f, 0.15f, 1));
             UIFactory.SetLayoutElement(CloseButton.Component.gameObject, minHeight: 25, minWidth: 25, flexibleWidth: 0);

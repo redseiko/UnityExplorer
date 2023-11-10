@@ -237,26 +237,28 @@ namespace UnityExplorer.UI.Panels
             if (input.Component.caretPosition == lastCaretPosition && input.UIRoot.transform.position == lastInputPosition)
                 return;
             
-            if (CurrentHandler.AnchorToCaretPosition)
-            {
-                if (!input.Component.isFocused)
-                    return;
+            //if (CurrentHandler.AnchorToCaretPosition)
+            //{
+            //    if (!input.Component.isFocused)
+            //        return;
 
-                TextGenerator textGen = input.Component.cachedInputTextGenerator;
-                int caretIdx = Math.Max(0, Math.Min(textGen.characterCount - 1, input.Component.caretPosition));
+            //    TextGenerator textGen = input.Component.cachedInputTextGenerator;
+            //    int caretIdx = Math.Max(0, Math.Min(textGen.characterCount - 1, input.Component.caretPosition));
 
-                // normalize the caret horizontal position
-                Vector3 caretPos = textGen.characters[caretIdx].cursorPos;
-                // transform to world point
-                caretPos = input.UIRoot.transform.TransformPoint(caretPos);
-                caretPos += new Vector3(input.Transform.rect.width * 0.5f, -(input.Transform.rect.height * 0.5f), 0);
+            //    // normalize the caret horizontal position
+            //    Vector3 caretPos = textGen.characters[caretIdx].cursorPos;
+            //    // transform to world point
+            //    caretPos = input.UIRoot.transform.TransformPoint(caretPos);
+            //    caretPos += new Vector3(input.Transform.rect.width * 0.5f, -(input.Transform.rect.height * 0.5f), 0);
 
-                uiRoot.transform.position = new Vector3(caretPos.x + 10, caretPos.y - 30, 0);
-            }
-            else
-            {
-                uiRoot.transform.position = input.Transform.position + new Vector3(-(input.Transform.rect.width / 2) + 10, -20, 0);
-            }
+            //    uiRoot.transform.position = new Vector3(caretPos.x + 10, caretPos.y - 30, 0);
+            //}
+            //else
+            //{
+            //    uiRoot.transform.position = input.Transform.position + new Vector3(-(input.Transform.rect.width / 2) + 10, -20, 0);
+            //}
+
+            uiRoot.transform.position = input.Transform.position + new Vector3(-(input.Transform.rect.width / 2) + 10, -20, 0);
 
             lastInputPosition = input.UIRoot.transform.position;
             lastCaretPosition = input.Component.caretPosition;

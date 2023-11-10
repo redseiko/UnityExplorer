@@ -1,4 +1,6 @@
-﻿using UniverseLib.UI;
+﻿using TMPro;
+
+using UniverseLib.UI;
 
 namespace UnityExplorer.CacheObject.Views
 {
@@ -16,8 +18,8 @@ namespace UnityExplorer.CacheObject.Views
 
             // Left label
 
-            NameLabel = UIFactory.CreateLabel(UIRoot, "NameLabel", "<notset>", TextAnchor.MiddleLeft);
-            NameLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            NameLabel = UIFactory.CreateTMPLabel(UIRoot, "NameLabel", "<notset>", TextAlignmentOptions.Left);
+            NameLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(NameLabel.gameObject, minHeight: 25, flexibleWidth: 9999, flexibleHeight: 300);
             NameLayout = NameLabel.GetComponent<LayoutElement>();
 
@@ -33,13 +35,13 @@ namespace UnityExplorer.CacheObject.Views
 
             // Type label
 
-            TypeLabel = UIFactory.CreateLabel(horiGroup, "TypeLabel", "<notset>", TextAnchor.MiddleLeft);
-            TypeLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            TypeLabel = UIFactory.CreateTMPLabel(horiGroup, "TypeLabel", "<notset>", TextAlignmentOptions.Left);
+            TypeLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(TypeLabel.gameObject, minHeight: 25, flexibleHeight: 150, minWidth: 60, flexibleWidth: 0);
 
             // Bool and number value interaction
 
-            GameObject toggleObj = UIFactory.CreateToggle(horiGroup, "Toggle", out Toggle, out ToggleText);
+            GameObject toggleObj = UIFactory.CreateTMPToggle(horiGroup, "Toggle", out Toggle, out ToggleText);
             UIFactory.SetLayoutElement(toggleObj, minWidth: 70, minHeight: 25, flexibleWidth: 0, flexibleHeight: 0);
             ToggleText.color = SignatureHighlighter.KeywordBlue;
             Toggle.onValueChanged.AddListener(ToggleClicked);
@@ -55,8 +57,8 @@ namespace UnityExplorer.CacheObject.Views
 
             // Main value label
 
-            ValueLabel = UIFactory.CreateLabel(horiGroup, "ValueLabel", "Value goes here", TextAnchor.MiddleLeft);
-            ValueLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            ValueLabel = UIFactory.CreateTMPLabel(horiGroup, "ValueLabel", "Value goes here", TextAlignmentOptions.Left);
+            ValueLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(ValueLabel.gameObject, minHeight: 25, flexibleHeight: 150, flexibleWidth: 9999);
 
             // Subcontent

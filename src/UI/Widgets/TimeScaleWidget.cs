@@ -77,7 +77,7 @@ namespace UnityExplorer.UI.Widgets
 
             timeInput = UIFactory.CreateInputField(parent, "TimeInput", "timeScale");
             UIFactory.SetLayoutElement(timeInput.Component.gameObject, minHeight: 25, minWidth: 40);
-            timeInput.Component.GetOnEndEdit().AddListener(OnTimeInputEndEdit);
+            timeInput.Component.onEndEdit.AddListener(OnTimeInputEndEdit);
 
             timeInput.Text = string.Empty;
             timeInput.Text = Time.timeScale.ToString();

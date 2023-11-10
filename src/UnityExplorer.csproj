@@ -58,10 +58,11 @@
     </PropertyGroup>
     <!-- BEPINEX 5 MONO -->
     <PropertyGroup Condition="'$(Configuration)'=='BIE5_Mono'">
-        <TargetFramework>net35</TargetFramework>
+        <TargetFramework>net48</TargetFramework>
         <OutputPath>..\Release\UnityExplorer.BepInEx5.Mono\</OutputPath>
         <DefineConstants>MONO,BIE,BIE5</DefineConstants>
         <AssemblyName>UnityExplorer.BIE5.Mono</AssemblyName>
+        <Optimize>true</Optimize>
     </PropertyGroup>
     <!-- STANDALONE Mono -->
     <PropertyGroup Condition="'$(Configuration)'=='STANDALONE_Mono'">
@@ -94,10 +95,11 @@
         <PackageReference Include="UniverseLib.IL2CPP.Interop" Version="1.5.1" />
     </ItemGroup>
     <!-- mono nuget -->
-    <ItemGroup Condition="'$(Configuration)'=='BIE6_Mono' or '$(Configuration)'=='BIE5_Mono' or '$(Configuration)'=='ML_Mono' or '$(Configuration)'=='STANDALONE_Mono'">
-        <PackageReference Include="UniverseLib.Mono" Version="1.5.1" />
-    </ItemGroup>
-
+  <ItemGroup Condition="'$(Configuration)'=='BIE6_Mono' or '$(Configuration)'=='BIE5_Mono' or '$(Configuration)'=='ML_Mono' or '$(Configuration)'=='STANDALONE_Mono'">
+    <Reference Include="UniverseLib.Mono">
+      <HintPath>..\..\UniverseLib\Release\UniverseLib.Mono\UniverseLib.Mono.dll</HintPath>
+    </Reference>
+  </ItemGroup>
     <!-- ~~~~~ ASSEMBLY REFERENCES ~~~~~ -->
     <!-- net6 -->
     <ItemGroup Condition="'$(TargetFramework)'=='net6'">
@@ -107,7 +109,7 @@
         </Reference>
     </ItemGroup>
     <!-- net35 / net472 -->
-    <ItemGroup Condition="'$(TargetFramework)'=='net35' or '$(TargetFramework)'=='net472'">
+    <ItemGroup Condition="'$(TargetFramework)'=='net35' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='net48'">
         <Reference Include="mcs">
             <HintPath>..\lib\net35\mcs.dll</HintPath>
             <Private>True</Private>
@@ -157,16 +159,40 @@
         </Reference>
     </ItemGroup>
     <!-- Mono -->
-    <ItemGroup Condition="'$(Configuration)'=='BIE6_Mono' or '$(Configuration)'=='BIE5_Mono' or '$(Configuration)'=='ML_Mono' or '$(Configuration)'=='STANDALONE_Mono'">
-        <Reference Include="UnityEngine">
-            <HintPath>..\lib\net35\UnityEngine.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.UI">
-            <HintPath>..\lib\net35\UnityEngine.UI.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='BIE6_Mono' or '$(Configuration)'=='BIE5_Mono' or '$(Configuration)'=='ML_Mono' or '$(Configuration)'=='STANDALONE_Mono'">
+    <Reference Include="UnityEngine">
+      <HintPath>..\lib\net35\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>..\lib\net35\UnityEngine.AudioModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\lib\net35\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\lib\net35\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\lib\net35\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\lib\net35\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\lib\net35\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\lib\net35\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
     <!-- Il2Cpp Unhollower -->
     <ItemGroup Condition="'$(Configuration)'=='ML_Cpp_net6' or '$(Configuration)'=='ML_Cpp_net472' or '$(Configuration)'=='STANDALONE_Cpp' or '$(Configuration)'=='BIE_Cpp'">
         <Reference Include="Il2Cppmscorlib">
@@ -252,5 +278,10 @@
             <HintPath>..\lib\interop\UnityEngine.IMGUIModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="Unity.TextMeshPro">
+        <HintPath>..\lib\net35\Unity.TextMeshPro.dll</HintPath>
+      </Reference>
     </ItemGroup>
 </Project>

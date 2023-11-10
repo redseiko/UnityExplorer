@@ -240,7 +240,7 @@ namespace UnityExplorer.UI.Panels
 
             inputField = UIFactory.CreateInputField(row, $"{name}_Input", placeHolder);
             UIFactory.SetLayoutElement(inputField.GameObject, minWidth: 125, minHeight: 25, flexibleWidth: 9999);
-            inputField.Component.GetOnEndEdit().AddListener(onInputEndEdit);
+            inputField.Component.onEndEdit.AddListener(onInputEndEdit);
 
             return row;
         }

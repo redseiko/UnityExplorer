@@ -39,7 +39,7 @@ namespace UnityExplorer.CacheObject.Views
             this.NameLayout.flexibleWidth = 0;
             this.NameLayout.minHeight = 30;
             this.NameLayout.flexibleHeight = 0;
-            this.NameLabel.alignment = TextAnchor.MiddleRight;
+            this.NameLabel.alignment = TMPro.TextAlignmentOptions.Right;
 
             this.RightGroupLayout.minWidth = AdjustedWidth * 0.55f;
 

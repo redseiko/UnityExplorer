@@ -1,4 +1,7 @@
-﻿using UnityExplorer.UI.Panels;
+﻿using TMPro;
+
+using UnityExplorer.UI.Panels;
+
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ScrollView;
@@ -40,12 +43,12 @@ namespace UnityExplorer.CacheObject.Views
         public LayoutElement RightGroupLayout;
         public GameObject SubContentHolder;
 
-        public Text NameLabel;
+        public TMP_Text NameLabel;
         public InputFieldRef HiddenNameLabel; // for selecting the name label
-        public Text TypeLabel;
-        public Text ValueLabel;
+        public TMP_Text TypeLabel;
+        public TMP_Text ValueLabel;
         public Toggle Toggle;
-        public Text ToggleText;
+        public TMP_Text ToggleText;
         public InputFieldRef InputField;
 
         public ButtonRef InspectButton;
@@ -115,8 +118,8 @@ namespace UnityExplorer.CacheObject.Views
 
             // Left name label
 
-            NameLabel = UIFactory.CreateLabel(horiRow, "NameLabel", "<notset>", TextAnchor.MiddleLeft);
-            NameLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            NameLabel = UIFactory.CreateTMPLabel(horiRow, "NameLabel", "<notset>");
+            NameLabel.textWrappingMode = TextWrappingModes.Normal; 
             NameLayout = UIFactory.SetLayoutElement(NameLabel.gameObject, minHeight: 25, minWidth: 20, flexibleHeight: 300, flexibleWidth: 0);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(NameLabel.gameObject, true, true, true, true);
 
@@ -125,8 +128,8 @@ namespace UnityExplorer.CacheObject.Views
             hiddenRect.anchorMin = Vector2.zero;
             hiddenRect.anchorMax = Vector2.one;
             HiddenNameLabel.Component.readOnly = true;
-            HiddenNameLabel.Component.lineType = UnityEngine.UI.InputField.LineType.MultiLineNewline;
-            HiddenNameLabel.Component.textComponent.horizontalOverflow = HorizontalWrapMode.Wrap;
+            HiddenNameLabel.Component.lineType = TMP_InputField.LineType.MultiLineNewline;
+            HiddenNameLabel.Component.textComponent.textWrappingMode = TextWrappingModes.Normal;
             HiddenNameLabel.Component.gameObject.GetComponent<Image>().color = Color.clear;
             HiddenNameLabel.Component.textComponent.color = Color.clear;
             UIFactory.SetLayoutElement(HiddenNameLabel.Component.gameObject, minHeight: 25, minWidth: 20, flexibleHeight: 300, flexibleWidth: 0);
@@ -152,13 +155,13 @@ namespace UnityExplorer.CacheObject.Views
 
             // Type label
 
-            TypeLabel = UIFactory.CreateLabel(rightHoriGroup, "ReturnLabel", "<notset>", TextAnchor.MiddleLeft);
-            TypeLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            TypeLabel = UIFactory.CreateTMPLabel(rightHoriGroup, "ReturnLabel", "<notset>", TextAlignmentOptions.Left);
+            TypeLabel.textWrappingMode = TextWrappingModes.Normal; 
             UIFactory.SetLayoutElement(TypeLabel.gameObject, minHeight: 25, flexibleHeight: 150, minWidth: 45, flexibleWidth: 0);
 
             // Bool and number value interaction
 
-            GameObject toggleObj = UIFactory.CreateToggle(rightHoriGroup, "Toggle", out Toggle, out ToggleText);
+            GameObject toggleObj = UIFactory.CreateTMPToggle(rightHoriGroup, "Toggle", out Toggle, out ToggleText);
             UIFactory.SetLayoutElement(toggleObj, minWidth: 70, minHeight: 25, flexibleWidth: 0, flexibleHeight: 0);
             ToggleText.color = SignatureHighlighter.KeywordBlue;
             Toggle.onValueChanged.AddListener(ToggleClicked);
@@ -180,8 +183,8 @@ namespace UnityExplorer.CacheObject.Views
 
             // Main value label
 
-            ValueLabel = UIFactory.CreateLabel(rightHoriGroup, "ValueLabel", "Value goes here", TextAnchor.MiddleLeft);
-            ValueLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            ValueLabel = UIFactory.CreateTMPLabel(rightHoriGroup, "ValueLabel", "Value goes here", TextAlignmentOptions.Left);
+            ValueLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(ValueLabel.gameObject, minHeight: 25, flexibleHeight: 150, flexibleWidth: 9999);
 
             // Copy and Paste buttons

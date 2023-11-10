@@ -109,7 +109,7 @@ namespace UnityExplorer.UI.Widgets
 
             Vector3Control control = new(owner, type, inputField);
 
-            inputField.Component.GetOnEndEdit().AddListener((string value) => { control.OnTransformInputEndEdit(type, value); });
+            inputField.Component.onEndEdit.AddListener((string value) => { control.OnTransformInputEndEdit(type, value); });
 
             control.AxisControls[0] = AxisControl.Create(rowObj, "X", 0, control);
             control.AxisControls[1] = AxisControl.Create(rowObj, "Y", 1, control);
@@ -118,7 +118,7 @@ namespace UnityExplorer.UI.Widgets
             control.IncrementInput = UIFactory.CreateInputField(rowObj, "IncrementInput", "...");
             control.IncrementInput.Text = "0.1";
             UIFactory.SetLayoutElement(control.IncrementInput.GameObject, minWidth: 30, flexibleWidth: 0, minHeight: 25);
-            control.IncrementInput.Component.GetOnEndEdit().AddListener(control.IncrementInput_OnEndEdit);
+            control.IncrementInput.Component.onEndEdit.AddListener(control.IncrementInput_OnEndEdit);
 
             return control;
         }

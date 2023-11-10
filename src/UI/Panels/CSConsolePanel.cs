@@ -1,4 +1,7 @@
 ﻿using System.Collections;
+
+using TMPro;
+
 using UnityExplorer.CSConsole;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
@@ -18,9 +21,9 @@ namespace UnityExplorer.UI.Panels
 
         public InputFieldScroller InputScroller { get; private set; }
         public InputFieldRef Input => InputScroller.InputField;
-        public Text InputText { get; private set; }
-        public Text HighlightText { get; private set; }
-        public Text LineNumberText { get; private set; }
+        public TMP_Text InputText { get; private set; }
+        public TMP_Text HighlightText { get; private set; }
+        public TMP_Text LineNumberText { get; private set; }
 
         public Dropdown HelpDropdown { get; private set; }
 
@@ -131,8 +134,8 @@ namespace UnityExplorer.UI.Panels
             linesHolder.AddComponent<Image>().color = new Color(0.05f, 0.05f, 0.05f);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(linesHolder, true, true, true, true);
 
-            LineNumberText = UIFactory.CreateLabel(linesHolder, "LineNumbers", "1", TextAnchor.UpperCenter, Color.grey, fontSize: 16);
-            LineNumberText.font = UniversalUI.ConsoleFont;
+            LineNumberText = UIFactory.CreateTMPLabel(linesHolder, "LineNumbers", "1", TextAlignmentOptions.Top, Color.grey, fontSize: 16);
+            LineNumberText.font = UniversalUI.DefaultTMPFont;
 
             // input field
 
@@ -155,7 +158,7 @@ namespace UnityExplorer.UI.Panels
             }
 
             InputText = Input.Component.textComponent;
-            InputText.supportRichText = false;
+            InputText.richText = false;
             InputText.color = Color.clear;
             Input.Component.customCaretColor = true;
             Input.Component.caretColor = Color.white;
@@ -170,15 +173,15 @@ namespace UnityExplorer.UI.Panels
             highlightTextRect.offsetMin = Vector2.zero;
             highlightTextRect.offsetMax = Vector2.zero;
 
-            HighlightText = highlightTextObj.AddComponent<Text>();
+            HighlightText = highlightTextObj.AddComponent<TextMeshProUGUI>();
             HighlightText.color = Color.white;
-            HighlightText.supportRichText = true;
+            HighlightText.richText = true;
             HighlightText.fontSize = fontSize;
 
             // Set fonts
-            InputText.font = UniversalUI.ConsoleFont;
-            Input.PlaceholderText.font = UniversalUI.ConsoleFont;
-            HighlightText.font = UniversalUI.ConsoleFont;
+            InputText.font = UniversalUI.DefaultTMPFont;
+            Input.PlaceholderText.font = UniversalUI.DefaultTMPFont;
+            HighlightText.font = UniversalUI.DefaultTMPFont;
 
             RuntimeHelper.StartCoroutine(DelayedLayoutSetup());
         }

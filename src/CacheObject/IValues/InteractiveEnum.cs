@@ -139,7 +139,7 @@ namespace UnityExplorer.CacheObject.IValues
 
             inputField = UIFactory.CreateInputField(hori, "InputField", "Enter name or underlying value...");
             UIFactory.SetLayoutElement(inputField.UIRoot, minHeight: 25, flexibleHeight: 50, minWidth: 100, flexibleWidth: 1000);
-            inputField.Component.lineType = InputField.LineType.MultiLineNewline;
+            inputField.Component.lineType = TMPro.TMP_InputField.LineType.MultiLineNewline;
             inputField.UIRoot.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             enumHelperButton = UIFactory.CreateButton(hori, "EnumHelper", "▼");

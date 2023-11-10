@@ -207,10 +207,10 @@ namespace UnityExplorer.UI.Panels
             Input.Component.GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f);
 
             Input.Component.readOnly = true;
-            Input.Component.textComponent.supportRichText = true;
-            Input.Component.lineType = InputField.LineType.MultiLineNewline;
-            Input.Component.textComponent.font = UniversalUI.ConsoleFont;
-            Input.PlaceholderText.font = UniversalUI.ConsoleFont;
+            Input.Component.textComponent.richText = true;
+            Input.Component.lineType = TMPro.TMP_InputField.LineType.MultiLineNewline;
+            //Input.Component.textComponent.font = UniversalUI.ConsoleFont;
+            //Input.PlaceholderText.font = UniversalUI.ConsoleFont;
 
             return UIRoot;
         }

@@ -153,7 +153,7 @@ namespace UnityExplorer.Inspectors
             lastMousePos = mousePos;
 
             // use the raw mouse pos for the label
-            mousePosLabel.text = $"<color=grey>Mouse Position:</color> {mousePos.ToString()}";
+            mousePosLabel.text = $"<color=#9F9F9F>Mouse Position:</color> {mousePos.ToString()}";
 
             // constrain the mouse pos we use within certain bounds
             if (mousePos.x < 350)

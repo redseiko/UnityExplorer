@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 using System.Reflection.Emit;
+
+using TMPro;
+
 using UnityExplorer.CacheObject;
 using UnityExplorer.CacheObject.Views;
 using UnityExplorer.Config;
@@ -63,8 +66,8 @@ namespace UnityExplorer.Inspectors
         public string TabButtonText { get; set; }
 
         InputFieldRef hiddenNameText;
-        Text nameText;
-        Text assemblyText;
+        TMP_Text nameText;
+        TMP_Text assemblyText;
         Toggle autoUpdateToggle;
 
         ButtonRef dnSpyButton;
@@ -75,6 +78,8 @@ namespace UnityExplorer.Inspectors
         InputFieldRef filterInputField;
         readonly List<Toggle> memberTypeToggles = new();
         readonly Dictionary<BindingFlags, ButtonRef> scopeFilterButtons = new();
+
+        readonly Stopwatch _stopwatch = new();
 
         // Setup
 
@@ -91,7 +96,9 @@ namespace UnityExplorer.Inspectors
         private IEnumerator InitCoroutine()
         {
             yield return null;
-            LayoutRebuilder.ForceRebuildLayoutImmediate(InspectorPanel.Instance.ContentRect);
+            yield return null;
+            yield return null;
+            LayoutRebuilder.MarkLayoutForRebuild(InspectorPanel.Instance.ContentRect);
         }
 
         public override void CloseInspector()
@@ -152,7 +159,7 @@ namespace UnityExplorer.Inspectors
             string asmText;
             if (TargetType.Assembly is AssemblyBuilder || string.IsNullOrEmpty(TargetType.Assembly.Location))
             {
-                asmText = $"{TargetType.Assembly.GetName().Name} <color=grey><i>(in memory)</i></color>";
+                asmText = $"{TargetType.Assembly.GetName().Name} <color=#9F9F9F><i>(in memory)</i></color>";
                 dnSpyButton.GameObject.SetActive(false);
             }
             else
@@ -160,7 +167,7 @@ namespace UnityExplorer.Inspectors
                 asmText = Path.GetFileName(TargetType.Assembly.Location);
                 dnSpyButton.GameObject.SetActive(true);
             }
-            assemblyText.text = $"<color=grey>Assembly:</color> {asmText}";
+            assemblyText.text = $"<color=#9F9F9F>Assembly:</color> {asmText}";
 
             // Unity object helper widget
 
@@ -168,7 +175,6 @@ namespace UnityExplorer.Inspectors
                 this.UnityWidget = UnityObjectWidget.GetUnityWidget(target, TargetType, this);
 
             // Get cache members
-
             this.members = CacheMemberFactory.GetCacheMembers(TargetType, this);
 
             // reset filters
@@ -179,8 +185,9 @@ namespace UnityExplorer.Inspectors
             scopeFilterButtons[BindingFlags.Default].Component.gameObject.SetActive(!StaticOnly);
             scopeFilterButtons[BindingFlags.Instance].Component.gameObject.SetActive(!StaticOnly);
 
-            foreach (Toggle toggle in memberTypeToggles)
-                toggle.isOn = true;
+            foreach (Toggle toggle in memberTypeToggles) {
+              toggle.isOn = true;
+            }
 
             refreshWanted = true;
         }
@@ -206,8 +213,11 @@ namespace UnityExplorer.Inspectors
                 lastMemberFilter = memberFilter;
 
                 FilterMembers();
+                _stopwatch.Restart();
                 MemberScrollPool.Refresh(true, true);
                 refreshWanted = false;
+                _stopwatch.Stop();
+                UnityEngine.Debug.Log($"MemberScrollPool.Refresh elapsed time: {_stopwatch.ElapsedMilliseconds} ms");
             }
 
             // once-per-second updates
@@ -417,7 +427,7 @@ namespace UnityExplorer.Inspectors
             GameObject titleHolder = UIFactory.CreateUIObject("TitleHolder", topRow);
             UIFactory.SetLayoutElement(titleHolder, minHeight: 35, flexibleHeight: 0, flexibleWidth: 9999);
 
-            nameText = UIFactory.CreateLabel(titleHolder, "VisibleTitle", "NotSet", TextAnchor.MiddleLeft);
+            nameText = UIFactory.CreateTMPLabel(titleHolder, "VisibleTitle", "NotSet");
             RectTransform namerect = nameText.GetComponent<RectTransform>();
             namerect.anchorMin = new Vector2(0, 0);
             namerect.anchorMax = new Vector2(1, 1);
@@ -429,10 +439,10 @@ namespace UnityExplorer.Inspectors
             hiddenrect.anchorMin = new Vector2(0, 0);
             hiddenrect.anchorMax = new Vector2(1, 1);
             hiddenNameText.Component.readOnly = true;
-            hiddenNameText.Component.lineType = InputField.LineType.MultiLineNewline;
+            hiddenNameText.Component.lineType = TMP_InputField.LineType.MultiLineNewline;
             hiddenNameText.Component.gameObject.GetComponent<Image>().color = Color.clear;
-            hiddenNameText.Component.textComponent.horizontalOverflow = HorizontalWrapMode.Wrap;
-            hiddenNameText.Component.textComponent.fontSize = 17;
+            hiddenNameText.Component.textComponent.textWrappingMode = TextWrappingModes.Normal;
+            hiddenNameText.Component.textComponent.fontSize = 17f;
             hiddenNameText.Component.textComponent.color = Color.clear;
             UIFactory.SetLayoutElement(hiddenNameText.Component.gameObject, minHeight: 35, flexibleHeight: 0, flexibleWidth: 9999);
 
@@ -451,7 +461,7 @@ namespace UnityExplorer.Inspectors
             GameObject asmRow = UIFactory.CreateHorizontalGroup(UIRoot, "AssemblyRow", false, false, true, true, 5, default, new(1, 1, 1, 0));
             UIFactory.SetLayoutElement(asmRow, flexibleWidth: 9999, minHeight: 25);
 
-            assemblyText = UIFactory.CreateLabel(asmRow, "AssemblyLabel", "not set", TextAnchor.MiddleLeft);
+            assemblyText = UIFactory.CreateTMPLabel(asmRow, "AssemblyLabel", "not set", TextAlignmentOptions.Left);
             UIFactory.SetLayoutElement(assemblyText.gameObject, minHeight: 25, flexibleWidth: 9999);
 
             dnSpyButton = UIFactory.CreateButton(asmRow, "DnSpyButton", "View in dnSpy");

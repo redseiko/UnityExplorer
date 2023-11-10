@@ -345,28 +345,28 @@ namespace UnityExplorer.CSConsole
             if (Input.Text.Length == 0)
                 return;
 
-            // If caret moved, ensure caret is visible in the viewport
-            if (caretMoved)
-            {
-                UICharInfo charInfo = Input.TextGenerator.characters[LastCaretPosition];
-                float charTop = charInfo.cursorPos.y;
-                float charBot = charTop - CSCONSOLE_LINEHEIGHT;
+            //// If caret moved, ensure caret is visible in the viewport
+            //if (caretMoved)
+            //{
+            //    UICharInfo charInfo = Input.TextGenerator.characters[LastCaretPosition];
+            //    float charTop = charInfo.cursorPos.y;
+            //    float charBot = charTop - CSCONSOLE_LINEHEIGHT;
 
-                float viewportMin = Input.Transform.rect.height - Input.Transform.anchoredPosition.y - (Input.Transform.rect.height * 0.5f);
-                float viewportMax = viewportMin - Panel.InputScroller.ViewportRect.rect.height;
+            //    float viewportMin = Input.Transform.rect.height - Input.Transform.anchoredPosition.y - (Input.Transform.rect.height * 0.5f);
+            //    float viewportMax = viewportMin - Panel.InputScroller.ViewportRect.rect.height;
 
-                float diff = 0f;
-                if (charTop > viewportMin)
-                    diff = charTop - viewportMin;
-                else if (charBot < viewportMax)
-                    diff = charBot - viewportMax;
+            //    float diff = 0f;
+            //    if (charTop > viewportMin)
+            //        diff = charTop - viewportMin;
+            //    else if (charBot < viewportMax)
+            //        diff = charBot - viewportMax;
 
-                if (Math.Abs(diff) > 1)
-                {
-                    RectTransform rect = Input.Transform;
-                    rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, rect.anchoredPosition.y - diff);
-                }
-            }
+            //    if (Math.Abs(diff) > 1)
+            //    {
+            //        RectTransform rect = Input.Transform;
+            //        rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, rect.anchoredPosition.y - diff);
+            //    }
+            //}
         }
 
         public static void SetCaretPosition(int caretPosition)
@@ -405,44 +405,44 @@ namespace UnityExplorer.CSConsole
         // For Home and End keys
         static void JumpToStartOrEndOfLine(bool toStart)
         {
-            // Determine the current and next line
-            UILineInfo thisline = default;
-            UILineInfo? nextLine = null;
-            for (int i = 0; i < Input.Component.cachedInputTextGenerator.lineCount; i++)
-            {
-                UILineInfo line = Input.Component.cachedInputTextGenerator.lines[i];
+            //// Determine the current and next line
+            //UILineInfo thisline = default;
+            //UILineInfo? nextLine = null;
+            //for (int i = 0; i < Input.Component.cachedInputTextGenerator.lineCount; i++)
+            //{
+            //    UILineInfo line = Input.Component.cachedInputTextGenerator.lines[i];
 
-                if (line.startCharIdx > LastCaretPosition)
-                {
-                    nextLine = line;
-                    break;
-                }
-                thisline = line;
-            }
+            //    if (line.startCharIdx > LastCaretPosition)
+            //    {
+            //        nextLine = line;
+            //        break;
+            //    }
+            //    thisline = line;
+            //}
 
-            if (toStart)
-            {
-                // Determine where the indented text begins
-                int endOfLine = nextLine == null ? Input.Text.Length : nextLine.Value.startCharIdx;
-                int indentedStart = thisline.startCharIdx;
-                while (indentedStart < endOfLine - 1 && char.IsWhiteSpace(Input.Text[indentedStart]))
-                    indentedStart++;
+            //if (toStart)
+            //{
+            //    // Determine where the indented text begins
+            //    int endOfLine = nextLine == null ? Input.Text.Length : nextLine.Value.startCharIdx;
+            //    int indentedStart = thisline.startCharIdx;
+            //    while (indentedStart < endOfLine - 1 && char.IsWhiteSpace(Input.Text[indentedStart]))
+            //        indentedStart++;
 
-                // Jump to either the true start or the non-whitespace position,
-                // depending on which one we are not at.
-                if (LastCaretPosition == indentedStart)
-                    SetCaretPosition(thisline.startCharIdx);
-                else 
-                    SetCaretPosition(indentedStart);
-            }
-            else
-            {
-                // If there is no next line, jump to the end of this line (+1, to the invisible next character position)
-                if (nextLine == null)
-                    SetCaretPosition(Input.Text.Length);
-                else // jump to the next line start index - 1, ie. end of this line
-                    SetCaretPosition(nextLine.Value.startCharIdx - 1);
-            }
+            //    // Jump to either the true start or the non-whitespace position,
+            //    // depending on which one we are not at.
+            //    if (LastCaretPosition == indentedStart)
+            //        SetCaretPosition(thisline.startCharIdx);
+            //    else 
+            //        SetCaretPosition(indentedStart);
+            //}
+            //else
+            //{
+            //    // If there is no next line, jump to the end of this line (+1, to the invisible next character position)
+            //    if (nextLine == null)
+            //        SetCaretPosition(Input.Text.Length);
+            //    else // jump to the next line start index - 1, ie. end of this line
+            //        SetCaretPosition(nextLine.Value.startCharIdx - 1);
+            //}
         }
 
         #endregion
@@ -453,84 +453,84 @@ namespace UnityExplorer.CSConsole
         private static void HighlightVisibleInput(out bool inStringOrComment)
         {
             inStringOrComment = false;
-            if (string.IsNullOrEmpty(Input.Text))
-            {
-                Panel.HighlightText.text = "";
-                Panel.LineNumberText.text = "1";
-                return;
-            }
+            //if (string.IsNullOrEmpty(Input.Text))
+            //{
+            //    Panel.HighlightText.text = "";
+            //    Panel.LineNumberText.text = "1";
+            //    return;
+            //}
 
-            // Calculate the visible lines
+            //// Calculate the visible lines
 
-            int topLine = -1;
-            int bottomLine = -1;
+            //int topLine = -1;
+            //int bottomLine = -1;
 
-            // the top and bottom position of the viewport in relation to the text height
-            // they need the half-height adjustment to normalize against the 'line.topY' value.
-            float viewportMin = Input.Transform.rect.height - Input.Transform.anchoredPosition.y - (Input.Transform.rect.height * 0.5f);
-            float viewportMax = viewportMin - Panel.InputScroller.ViewportRect.rect.height;
+            //// the top and bottom position of the viewport in relation to the text height
+            //// they need the half-height adjustment to normalize against the 'line.topY' value.
+            //float viewportMin = Input.Transform.rect.height - Input.Transform.anchoredPosition.y - (Input.Transform.rect.height * 0.5f);
+            //float viewportMax = viewportMin - Panel.InputScroller.ViewportRect.rect.height;
 
-            for (int i = 0; i < Input.TextGenerator.lineCount; i++)
-            {
-                UILineInfo line = Input.TextGenerator.lines[i];
-                // if not set the top line yet, and top of line is below the viewport top
-                if (topLine == -1 && line.topY <= viewportMin)
-                    topLine = i;
-                // if bottom of line is below the viewport bottom
-                if ((line.topY - line.height) >= viewportMax)
-                    bottomLine = i;
-            }
+            //for (int i = 0; i < Input.TextGenerator.lineCount; i++)
+            //{
+            //    UILineInfo line = Input.TextGenerator.lines[i];
+            //    // if not set the top line yet, and top of line is below the viewport top
+            //    if (topLine == -1 && line.topY <= viewportMin)
+            //        topLine = i;
+            //    // if bottom of line is below the viewport bottom
+            //    if ((line.topY - line.height) >= viewportMax)
+            //        bottomLine = i;
+            //}
 
-            topLine = Math.Max(0, topLine - 1);
-            bottomLine = Math.Min(Input.TextGenerator.lineCount - 1, bottomLine + 1);
+            //topLine = Math.Max(0, topLine - 1);
+            //bottomLine = Math.Min(Input.TextGenerator.lineCount - 1, bottomLine + 1);
 
-            int startIdx = Input.TextGenerator.lines[topLine].startCharIdx;
-            int endIdx = (bottomLine >= Input.TextGenerator.lineCount - 1)
-                ? Input.Text.Length - 1
-                : (Input.TextGenerator.lines[bottomLine + 1].startCharIdx - 1);
+            //int startIdx = Input.TextGenerator.lines[topLine].startCharIdx;
+            //int endIdx = (bottomLine >= Input.TextGenerator.lineCount - 1)
+            //    ? Input.Text.Length - 1
+            //    : (Input.TextGenerator.lines[bottomLine + 1].startCharIdx - 1);
 
 
-            // Highlight the visible text with the LexerBuilder
+            //// Highlight the visible text with the LexerBuilder
 
-            Panel.HighlightText.text = Lexer.BuildHighlightedString(Input.Text, startIdx, endIdx, topLine, LastCaretPosition, out inStringOrComment);
+            //Panel.HighlightText.text = Lexer.BuildHighlightedString(Input.Text, startIdx, endIdx, topLine, LastCaretPosition, out inStringOrComment);
 
-            // Set the line numbers
+            //// Set the line numbers
 
-            // determine true starting line number (not the same as the cached TextGenerator line numbers)
-            int realStartLine = 0;
-            for (int i = 0; i < startIdx; i++)
-            {
-                if (LexerBuilder.IsNewLine(Input.Text[i]))
-                    realStartLine++;
-            }
-            realStartLine++;
-            char lastPrev = '\n';
+            //// determine true starting line number (not the same as the cached TextGenerator line numbers)
+            //int realStartLine = 0;
+            //for (int i = 0; i < startIdx; i++)
+            //{
+            //    if (LexerBuilder.IsNewLine(Input.Text[i]))
+            //        realStartLine++;
+            //}
+            //realStartLine++;
+            //char lastPrev = '\n';
 
-            StringBuilder sb = new();
+            //StringBuilder sb = new();
 
-            // append leading new lines for spacing (no point rendering line numbers we cant see)
-            for (int i = 0; i < topLine; i++)
-                sb.Append('\n');
+            //// append leading new lines for spacing (no point rendering line numbers we cant see)
+            //for (int i = 0; i < topLine; i++)
+            //    sb.Append('\n');
 
-            // append the displayed line numbers
-            for (int i = topLine; i <= bottomLine; i++)
-            {
-                if (i > 0)
-                    lastPrev = Input.Text[Input.TextGenerator.lines[i].startCharIdx - 1];
+            //// append the displayed line numbers
+            //for (int i = topLine; i <= bottomLine; i++)
+            //{
+            //    if (i > 0)
+            //        lastPrev = Input.Text[Input.TextGenerator.lines[i].startCharIdx - 1];
 
-                // previous line ended with a newline character, this is an actual new line.
-                if (LexerBuilder.IsNewLine(lastPrev))
-                {
-                    sb.Append(realStartLine.ToString());
-                    realStartLine++;
-                }
+            //    // previous line ended with a newline character, this is an actual new line.
+            //    if (LexerBuilder.IsNewLine(lastPrev))
+            //    {
+            //        sb.Append(realStartLine.ToString());
+            //        realStartLine++;
+            //    }
 
-                sb.Append('\n');
-            }
+            //    sb.Append('\n');
+            //}
 
-            Panel.LineNumberText.text = sb.ToString();
+            //Panel.LineNumberText.text = sb.ToString();
 
-            return;
+            //return;
         }
 
         #endregion

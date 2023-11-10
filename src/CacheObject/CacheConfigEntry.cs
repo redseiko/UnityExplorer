@@ -11,7 +11,7 @@ namespace UnityExplorer.CacheObject
             this.FallbackType = configElement.ElementType;
 
             this.NameLabelText = $"<color=cyan>{configElement.Name}</color>" +
-                $"\r\n<color=grey><i>{configElement.Description}</i></color>";
+                $"\r\n<color=#9F9F9F><i>{configElement.Description}</i></color>";
             this.NameLabelTextRaw = string.Empty;
 
             configElement.OnValueChangedNotify += UpdateValueFromSource;

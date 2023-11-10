@@ -30,7 +30,7 @@ namespace UnityExplorer.UI.Widgets
 
             inputField = UIFactory.CreateInputField(UIRoot, "InputField", "...");
             UIFactory.SetLayoutElement(inputField.UIRoot, minHeight: 25, flexibleHeight: 50, minWidth: 100, flexibleWidth: 1000);
-            inputField.Component.lineType = InputField.LineType.MultiLineNewline;
+            inputField.Component.lineType = TMPro.TMP_InputField.LineType.MultiLineNewline;
             inputField.UIRoot.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             typeCompleter = new TypeCompleter(typeof(object), this.inputField)
