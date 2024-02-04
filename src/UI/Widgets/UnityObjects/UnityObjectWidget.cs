@@ -1,134 +1,136 @@
-﻿using UnityExplorer.Inspectors;
+﻿namespace UnityExplorer.UI.Widgets;
+
+using TMPro;
+
+using UnityExplorer.Inspectors;
+
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.ObjectPool;
 
-namespace UnityExplorer.UI.Widgets
+public class UnityObjectWidget : IPooledObject
 {
-    public class UnityObjectWidget : IPooledObject
+    public UnityEngine.Object unityObject;
+    public Component component;
+    public ReflectionInspector owner;
+
+    protected ButtonRef gameObjectButton;
+    protected InputFieldRef nameInput;
+    protected InputFieldRef instanceIdInput;
+
+    // IPooledObject
+    public GameObject UIRoot { get; set; }
+    public float DefaultHeight => -1;
+
+    public static UnityObjectWidget GetUnityWidget(object target, Type targetType, ReflectionInspector inspector)
     {
-        public UnityEngine.Object unityObject;
-        public Component component;
-        public ReflectionInspector owner;
+        if (!typeof(UnityEngine.Object).IsAssignableFrom(targetType))
+            return null;
 
-        protected ButtonRef gameObjectButton;
-        protected InputFieldRef nameInput;
-        protected InputFieldRef instanceIdInput;
-
-        // IPooledObject
-        public GameObject UIRoot { get; set; }
-        public float DefaultHeight => -1;
-
-        public static UnityObjectWidget GetUnityWidget(object target, Type targetType, ReflectionInspector inspector)
+        UnityObjectWidget widget = target switch
         {
-            if (!typeof(UnityEngine.Object).IsAssignableFrom(targetType))
-                return null;
+            Texture2D or Cubemap => Pool<Texture2DWidget>.Borrow(),
+            Sprite s when s.texture => Pool<Texture2DWidget>.Borrow(),
+            Image i when i.sprite?.texture => Pool<Texture2DWidget>.Borrow(),
 
-            UnityObjectWidget widget = target switch
-            {
-                Texture2D or Cubemap => Pool<Texture2DWidget>.Borrow(),
-                Sprite s when s.texture => Pool<Texture2DWidget>.Borrow(),
-                Image i when i.sprite?.texture => Pool<Texture2DWidget>.Borrow(),
+            Material when MaterialWidget.MaterialWidgetSupported => Pool<MaterialWidget>.Borrow(),
 
-                Material when MaterialWidget.MaterialWidgetSupported => Pool<MaterialWidget>.Borrow(),
+            AudioClip => Pool<AudioClipWidget>.Borrow(),
 
-                AudioClip => Pool<AudioClipWidget>.Borrow(),
+            _ => Pool<UnityObjectWidget>.Borrow()
+        };
 
-                _ => Pool<UnityObjectWidget>.Borrow()
-            };
+        widget.OnBorrowed(target, targetType, inspector);
 
-            widget.OnBorrowed(target, targetType, inspector);
+        return widget;
+    }
 
-            return widget;
+    public virtual void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
+    {
+        this.owner = inspector;
+
+        if (!this.UIRoot)
+            CreateContent(inspector.UIRoot);
+        else
+            this.UIRoot.transform.SetParent(inspector.UIRoot.transform);
+
+        this.UIRoot.transform.SetSiblingIndex(inspector.UIRoot.transform.childCount - 2);
+
+        unityObject = target.TryCast<UnityEngine.Object>();
+        UIRoot.SetActive(true);
+
+        nameInput.Text = unityObject.name;
+        instanceIdInput.Text = unityObject.GetInstanceID().ToString();
+
+        if (typeof(Component).IsAssignableFrom(targetType))
+        {
+            component = (Component)target.TryCast(typeof(Component));
+            gameObjectButton.Component.gameObject.SetActive(true);
         }
+        else
+            gameObjectButton.Component.gameObject.SetActive(false);
+    }
 
-        public virtual void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
+    public virtual void OnReturnToPool()
+    {
+        unityObject = null;
+        component = null;
+        owner = null;
+    }
+
+    // Update
+
+    public virtual void Update()
+    {
+        if (this.unityObject)
         {
-            this.owner = inspector;
-
-            if (!this.UIRoot)
-                CreateContent(inspector.UIRoot);
-            else
-                this.UIRoot.transform.SetParent(inspector.UIRoot.transform);
-
-            this.UIRoot.transform.SetSiblingIndex(inspector.UIRoot.transform.childCount - 2);
-
-            unityObject = target.TryCast<UnityEngine.Object>();
-            UIRoot.SetActive(true);
-
             nameInput.Text = unityObject.name;
-            instanceIdInput.Text = unityObject.GetInstanceID().ToString();
-
-            if (typeof(Component).IsAssignableFrom(targetType))
-            {
-                component = (Component)target.TryCast(typeof(Component));
-                gameObjectButton.Component.gameObject.SetActive(true);
-            }
-            else
-                gameObjectButton.Component.gameObject.SetActive(false);
-        }
-
-        public virtual void OnReturnToPool()
-        {
-            unityObject = null;
-            component = null;
-            owner = null;
-        }
-
-        // Update
-
-        public virtual void Update()
-        {
-            if (this.unityObject)
-            {
-                nameInput.Text = unityObject.name;
                 
-                owner.Tab.TabText.text = $"{owner.TabButtonText} \"{unityObject.name}\"";
-            }
+            owner.Tab.TabText.text = $"{owner.TabButtonText} \"{unityObject.name}\"";
         }
+    }
 
-        // UI Listeners
+    // UI Listeners
 
-        private void OnGameObjectButtonClicked()
+    private void OnGameObjectButtonClicked()
+    {
+        if (!component)
         {
-            if (!component)
-            {
-                ExplorerCore.LogWarning("Component reference is null or destroyed!");
-                return;
-            }
-
-            InspectorManager.Inspect(component.gameObject);
+            ExplorerCore.LogWarning("Component reference is null or destroyed!");
+            return;
         }
 
-        // UI construction
+        InspectorManager.Inspect(component.gameObject);
+    }
 
-        public virtual GameObject CreateContent(GameObject uiRoot)
-        {
-            UIRoot = UIFactory.CreateUIObject("UnityObjectRow", uiRoot);
-            UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(UIRoot, false, false, true, true, 5);
-            UIFactory.SetLayoutElement(UIRoot, minHeight: 25, flexibleHeight: 0, flexibleWidth: 9999);
+    // UI construction
 
-            Text nameLabel = UIFactory.CreateLabel(UIRoot, "NameLabel", "Name:", TextAnchor.MiddleLeft, Color.grey);
-            UIFactory.SetLayoutElement(nameLabel.gameObject, minHeight: 25, minWidth: 45, flexibleWidth: 0);
+    public virtual GameObject CreateContent(GameObject uiRoot)
+    {
+        UIRoot = UIFactory.CreateUIObject("UnityObjectRow", uiRoot);
+        UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(UIRoot, false, false, true, true, 5);
+        UIFactory.SetLayoutElement(UIRoot, minHeight: 25, flexibleHeight: 0, flexibleWidth: 9999);
 
-            nameInput = UIFactory.CreateInputField(UIRoot, "NameInput", "untitled");
-            UIFactory.SetLayoutElement(nameInput.UIRoot, minHeight: 25, minWidth: 100, flexibleWidth: 1000);
-            nameInput.Component.readOnly = true;
+        TMP_Text nameLabel = UIFactory.CreateTMPLabel(UIRoot, "NameLabel", "Name:", TextAlignmentOptions.Left, Color.grey);
+        UIFactory.SetLayoutElement(nameLabel.gameObject, minHeight: 25, minWidth: 45, flexibleWidth: 0);
 
-            gameObjectButton = UIFactory.CreateButton(UIRoot, "GameObjectButton", "Inspect GameObject", new Color(0.2f, 0.2f, 0.2f));
-            UIFactory.SetLayoutElement(gameObjectButton.Component.gameObject, minHeight: 25, minWidth: 160);
-            gameObjectButton.OnClick += OnGameObjectButtonClicked;
+        nameInput = UIFactory.CreateInputField(UIRoot, "NameInput", "untitled");
+        UIFactory.SetLayoutElement(nameInput.UIRoot, minHeight: 25, minWidth: 100, flexibleWidth: 1000);
+        nameInput.Component.readOnly = true;
 
-            Text instanceLabel = UIFactory.CreateLabel(UIRoot, "InstanceLabel", "Instance ID:", TextAnchor.MiddleRight, Color.grey);
-            UIFactory.SetLayoutElement(instanceLabel.gameObject, minHeight: 25, minWidth: 100, flexibleWidth: 0);
+        gameObjectButton = UIFactory.CreateTMPButton(UIRoot, "GameObjectButton", "Inspect GameObject", new Color(0.2f, 0.2f, 0.2f));
+        UIFactory.SetLayoutElement(gameObjectButton.Component.gameObject, minHeight: 25, minWidth: 160);
+        gameObjectButton.OnClick += OnGameObjectButtonClicked;
 
-            instanceIdInput = UIFactory.CreateInputField(UIRoot, "InstanceIDInput", "ERROR");
-            UIFactory.SetLayoutElement(instanceIdInput.UIRoot, minHeight: 25, minWidth: 100, flexibleWidth: 0);
-            instanceIdInput.Component.readOnly = true;
+        TMP_Text instanceLabel = UIFactory.CreateTMPLabel(UIRoot, "InstanceLabel", "Instance ID:", TextAlignmentOptions.Right, Color.grey);
+        UIFactory.SetLayoutElement(instanceLabel.gameObject, minHeight: 25, minWidth: 100, flexibleWidth: 0);
 
-            UIRoot.SetActive(false);
+        instanceIdInput = UIFactory.CreateInputField(UIRoot, "InstanceIDInput", "ERROR");
+        UIFactory.SetLayoutElement(instanceIdInput.UIRoot, minHeight: 25, minWidth: 100, flexibleWidth: 0);
+        instanceIdInput.Component.readOnly = true;
 
-            return UIRoot;
-        }
+        UIRoot.SetActive(false);
+
+        return UIRoot;
     }
 }
