@@ -121,8 +121,7 @@ namespace UnityExplorer.CSConsole
             if (SRENotSupported)
                 return;
 
-            if (Evaluator != null)
-                Evaluator.Dispose();
+            Evaluator?.Dispose();
 
             GenerateTextWriter();
             Evaluator = new ScriptEvaluator(evaluatorStringWriter)

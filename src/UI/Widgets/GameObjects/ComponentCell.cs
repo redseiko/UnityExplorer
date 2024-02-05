@@ -1,50 +1,49 @@
-﻿using UniverseLib.UI;
+﻿namespace UnityExplorer.UI.Widgets;
+
+using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ButtonList;
 
-namespace UnityExplorer.UI.Widgets
+public class ComponentCell : ButtonCell
 {
-    public class ComponentCell : ButtonCell
+    public Toggle BehaviourToggle;
+    public ButtonRef DestroyButton;
+
+    public Action<bool, int> OnBehaviourToggled;
+    public Action<int> OnDestroyClicked;
+
+    private void BehaviourToggled(bool val)
     {
-        public Toggle BehaviourToggle;
-        public ButtonRef DestroyButton;
+        OnBehaviourToggled?.Invoke(val, CurrentDataIndex);
+    }
 
-        public Action<bool, int> OnBehaviourToggled;
-        public Action<int> OnDestroyClicked;
+    private void DestroyClicked()
+    {
+        OnDestroyClicked?.Invoke(CurrentDataIndex);
+    }
 
-        private void BehaviourToggled(bool val)
-        {
-            OnBehaviourToggled?.Invoke(val, CurrentDataIndex);
-        }
+    public override GameObject CreateContent(GameObject parent)
+    {
+        GameObject root = base.CreateContent(parent);
 
-        private void DestroyClicked()
-        {
-            OnDestroyClicked?.Invoke(CurrentDataIndex);
-        }
+        // Add mask to button so text doesnt overlap on Close button
+        //this.Button.Component.gameObject.AddComponent<Mask>().showMaskGraphic = true;
+        Button.ButtonTMPText.textWrappingMode = TMPro.TextWrappingModes.Normal;
 
-        public override GameObject CreateContent(GameObject parent)
-        {
-            GameObject root = base.CreateContent(parent);
+        // Behaviour toggle
 
-            // Add mask to button so text doesnt overlap on Close button
-            //this.Button.Component.gameObject.AddComponent<Mask>().showMaskGraphic = true;
-            this.Button.ButtonText.horizontalOverflow = HorizontalWrapMode.Wrap;
+        GameObject toggleObj = UIFactory.CreateToggle(UIRoot, "BehaviourToggle", out BehaviourToggle, out Text behavText);
+        UIFactory.SetLayoutElement(toggleObj, minHeight: 25, minWidth: 25);
+        BehaviourToggle.onValueChanged.AddListener(BehaviourToggled);
+        // put at first object
+        toggleObj.transform.SetSiblingIndex(0);
 
-            // Behaviour toggle
+        // Destroy button
 
-            GameObject toggleObj = UIFactory.CreateToggle(UIRoot, "BehaviourToggle", out BehaviourToggle, out Text behavText);
-            UIFactory.SetLayoutElement(toggleObj, minHeight: 25, minWidth: 25);
-            BehaviourToggle.onValueChanged.AddListener(BehaviourToggled);
-            // put at first object
-            toggleObj.transform.SetSiblingIndex(0);
+        DestroyButton = UIFactory.CreateTMPButton(UIRoot, "DestroyButton", "X", new Color(0.3f, 0.2f, 0.2f));
+        UIFactory.SetLayoutElement(DestroyButton.Component.gameObject, minHeight: 21, minWidth: 25);
+        DestroyButton.OnClick += DestroyClicked;
 
-            // Destroy button
-
-            DestroyButton = UIFactory.CreateButton(UIRoot, "DestroyButton", "X", new Color(0.3f, 0.2f, 0.2f));
-            UIFactory.SetLayoutElement(DestroyButton.Component.gameObject, minHeight: 21, minWidth: 25);
-            DestroyButton.OnClick += DestroyClicked;
-
-            return root;
-        }
+        return root;
     }
 }

@@ -1,34 +1,33 @@
-﻿using UnityExplorer.Inspectors;
+﻿namespace UnityExplorer.UI.Widgets;
 
-namespace UnityExplorer.UI.Widgets
+using UnityExplorer.Inspectors;
+
+// The base wrapper to hold a reference to the parent Inspector and the GameObjectInfo and TransformControls widgets.
+
+public class GameObjectControls
 {
-    // The base wrapper to hold a reference to the parent Inspector and the GameObjectInfo and TransformControls widgets.
+    public GameObjectInspector Parent { get; }
+    public GameObject Target => Parent.Target;
 
-    public class GameObjectControls
+    public GameObjectInfoPanel GameObjectInfo { get; }
+
+    public TransformControls TransformControl { get; }
+
+    public GameObjectControls(GameObjectInspector parent)
     {
-        public GameObjectInspector Parent { get; }
-        public GameObject Target => Parent.Target;
+        this.Parent = parent;
 
-        public GameObjectInfoPanel GameObjectInfo { get; }
+        this.GameObjectInfo = new(this);
+        this.TransformControl = new(this);
+    }
 
-        public TransformControls TransformControl { get; }
+    public void UpdateGameObjectInfo(bool firstUpdate, bool force)
+    {
+        GameObjectInfo.UpdateGameObjectInfo(firstUpdate, force);
+    }
 
-        public GameObjectControls(GameObjectInspector parent)
-        {
-            this.Parent = parent;
-
-            this.GameObjectInfo = new(this);
-            this.TransformControl = new(this);
-        }
-
-        public void UpdateGameObjectInfo(bool firstUpdate, bool force)
-        {
-            GameObjectInfo.UpdateGameObjectInfo(firstUpdate, force);
-        }
-
-        public void UpdateVectorSlider()
-        {
-            TransformControl.UpdateVectorSlider();
-        }
+    public void UpdateVectorSlider()
+    {
+        TransformControl.UpdateVectorSlider();
     }
 }

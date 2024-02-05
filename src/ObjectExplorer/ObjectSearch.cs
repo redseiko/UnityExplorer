@@ -143,7 +143,7 @@ namespace UnityExplorer.ObjectExplorer
                 cachedCellTexts.Add(index, text);
             }
 
-            cell.Button.ButtonText.text = cachedCellTexts[index];
+            cell.Button.ButtonTMPText.text = cachedCellTexts[index];
         }
 
         private void OnCellClicked(int dataIndex)
