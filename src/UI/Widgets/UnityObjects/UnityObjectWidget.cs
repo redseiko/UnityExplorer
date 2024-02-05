@@ -15,8 +15,8 @@ public class UnityObjectWidget : IPooledObject
     public ReflectionInspector owner;
 
     protected ButtonRef gameObjectButton;
-    protected InputFieldRef nameInput;
-    protected InputFieldRef instanceIdInput;
+    protected TMPInputFieldRef nameInput;
+    protected TMPInputFieldRef instanceIdInput;
 
     // IPooledObject
     public GameObject UIRoot { get; set; }
@@ -114,7 +114,7 @@ public class UnityObjectWidget : IPooledObject
         TMP_Text nameLabel = UIFactory.CreateTMPLabel(UIRoot, "NameLabel", "Name:", TextAlignmentOptions.Left, Color.grey);
         UIFactory.SetLayoutElement(nameLabel.gameObject, minHeight: 25, minWidth: 45, flexibleWidth: 0);
 
-        nameInput = UIFactory.CreateInputField(UIRoot, "NameInput", "untitled");
+        nameInput = UIFactory.CreateTMPInputField(UIRoot, "NameInput", "untitled");
         UIFactory.SetLayoutElement(nameInput.UIRoot, minHeight: 25, minWidth: 100, flexibleWidth: 1000);
         nameInput.Component.readOnly = true;
 
@@ -125,7 +125,7 @@ public class UnityObjectWidget : IPooledObject
         TMP_Text instanceLabel = UIFactory.CreateTMPLabel(UIRoot, "InstanceLabel", "Instance ID:", TextAlignmentOptions.Right, Color.grey);
         UIFactory.SetLayoutElement(instanceLabel.gameObject, minHeight: 25, minWidth: 100, flexibleWidth: 0);
 
-        instanceIdInput = UIFactory.CreateInputField(UIRoot, "InstanceIDInput", "ERROR");
+        instanceIdInput = UIFactory.CreateTMPInputField(UIRoot, "InstanceIDInput", "ERROR");
         UIFactory.SetLayoutElement(instanceIdInput.UIRoot, minHeight: 25, minWidth: 100, flexibleWidth: 0);
         instanceIdInput.Component.readOnly = true;
 

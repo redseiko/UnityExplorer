@@ -23,7 +23,7 @@ namespace UnityExplorer.CacheObject.Views
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(EvaluateHolder, false, false, true, true, 3);
             UIFactory.SetLayoutElement(EvaluateHolder, minHeight: 25, flexibleWidth: 9999, flexibleHeight: 775);
 
-            EvaluateButton = UIFactory.CreateButton(EvaluateHolder, "EvaluateButton", "Evaluate", new Color(0.15f, 0.15f, 0.15f));
+            EvaluateButton = UIFactory.CreateTMPButton(EvaluateHolder, "EvaluateButton", "Evaluate", new Color(0.15f, 0.15f, 0.15f));
             UIFactory.SetLayoutElement(EvaluateButton.Component.gameObject, minWidth: 100, minHeight: 25);
             EvaluateButton.OnClick += EvaluateClicked;
         }

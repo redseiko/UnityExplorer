@@ -25,7 +25,8 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
 
         public event Action<Suggestion> SuggestionClicked;
 
-        public InputFieldRef InputField { get; }
+        public InputFieldRef InputField => throw new NotSupportedException();
+        public IBaseInputFieldRef BaseInputField { get; }
         public bool AnchorToCaretPosition => false;
 
         readonly bool allowAbstract;
@@ -44,7 +45,7 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
 
         readonly List<Suggestion> loadingSuggestions = new()
         {
-            new("<color=grey>Loading...</color>", "")
+            new("<color=#808080FF>Loading...</color>", "")
         };
 
         bool ISuggestionProvider.AllowNavigation => false;
@@ -69,18 +70,18 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
             { "void", typeof(void) },
         };
 
-        public TypeCompleter(Type baseType, InputFieldRef inputField) : this(baseType, inputField, true, true, true) { }
+        public TypeCompleter(Type baseType, IBaseInputFieldRef inputField) : this(baseType, inputField, true, true, true) { }
 
-        public TypeCompleter(Type baseType, InputFieldRef inputField, bool allowAbstract, bool allowEnum, bool allowGeneric)
+        public TypeCompleter(Type baseType, IBaseInputFieldRef inputField, bool allowAbstract, bool allowEnum, bool allowGeneric)
         {
             BaseType = baseType;
-            InputField = inputField;
+            BaseInputField = inputField;
 
             this.allowAbstract = allowAbstract;
             this.allowEnum = allowEnum;
             this.allowGeneric = allowGeneric;
 
-            inputField.OnValueChanged += OnInputFieldChanged;
+            BaseInputField.OnValueChanged += OnInputFieldChanged;
 
             CacheTypes();
         }
@@ -88,7 +89,7 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
         public void OnSuggestionClicked(Suggestion suggestion)
         {
             chosenSuggestion = suggestion.UnderlyingValue;
-            InputField.Text = suggestion.UnderlyingValue;
+            BaseInputField.Text = suggestion.UnderlyingValue;
             SuggestionClicked?.Invoke(suggestion);
 
             suggestions.Clear();

@@ -1,4 +1,6 @@
-﻿using UnityExplorer.CacheObject.IValues;
+﻿using TMPro;
+
+using UnityExplorer.CacheObject.IValues;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 
@@ -10,10 +12,10 @@ namespace UnityExplorer.CacheObject.Views
         public InteractiveDictionary DictOwner => Occupant.Owner as InteractiveDictionary;
 
         public LayoutElement KeyGroupLayout;
-        public Text KeyLabel;
+        public TMP_Text KeyLabel;
         public ButtonRef KeyInspectButton;
-        public InputFieldRef KeyInputField;
-        public Text KeyInputTypeLabel;
+        public TMPInputFieldRef KeyInputField;
+        public TMP_Text KeyInputTypeLabel;
 
         public static Color EvenColor = new(0.07f, 0.07f, 0.07f);
         public static Color OddColor = new(0.063f, 0.063f, 0.063f);
@@ -39,7 +41,7 @@ namespace UnityExplorer.CacheObject.Views
             this.NameLayout.flexibleWidth = 0;
             this.NameLayout.minHeight = 30;
             this.NameLayout.flexibleHeight = 0;
-            this.NameLabel.alignment = TextAnchor.MiddleRight;
+            this.NameLabel.alignment = TextAlignmentOptions.Right;
 
             this.RightGroupLayout.minWidth = AdjustedWidth * 0.55f;
 
@@ -53,23 +55,23 @@ namespace UnityExplorer.CacheObject.Views
 
             // key Inspect
 
-            KeyInspectButton = UIFactory.CreateButton(keyGroup, "KeyInspectButton", "Inspect", new Color(0.15f, 0.15f, 0.15f));
+            KeyInspectButton = UIFactory.CreateTMPButton(keyGroup, "KeyInspectButton", "Inspect", new Color(0.15f, 0.15f, 0.15f));
             UIFactory.SetLayoutElement(KeyInspectButton.Component.gameObject, minWidth: 60, flexibleWidth: 0, minHeight: 25, flexibleHeight: 0);
             KeyInspectButton.OnClick += KeyInspectClicked;
 
             // label
 
-            KeyLabel = UIFactory.CreateLabel(keyGroup, "KeyLabel", "<i>empty</i>", TextAnchor.MiddleLeft);
+            KeyLabel = UIFactory.CreateTMPLabel(keyGroup, "KeyLabel", "<i>empty</i>", TextAlignmentOptions.Left);
             UIFactory.SetLayoutElement(KeyLabel.gameObject, minWidth: 50, flexibleWidth: 999, minHeight: 25);
 
             // Type label for input field
 
-            KeyInputTypeLabel = UIFactory.CreateLabel(keyGroup, "InputTypeLabel", "<i>null</i>", TextAnchor.MiddleLeft);
+            KeyInputTypeLabel = UIFactory.CreateTMPLabel(keyGroup, "InputTypeLabel", "<i>null</i>", TextAlignmentOptions.Left);
             UIFactory.SetLayoutElement(KeyInputTypeLabel.gameObject, minWidth: 55, flexibleWidth: 0, minHeight: 25, flexibleHeight: 0);
 
             // input field
 
-            KeyInputField = UIFactory.CreateInputField(keyGroup, "KeyInput", "empty");
+            KeyInputField = UIFactory.CreateTMPInputField(keyGroup, "KeyInput", "empty");
             UIFactory.SetLayoutElement(KeyInputField.UIRoot, minHeight: 25, flexibleHeight: 0, flexibleWidth: 0, preferredWidth: 200);
             //KeyInputField.lineType = InputField.LineType.MultiLineNewline;
             KeyInputField.Component.readOnly = true;

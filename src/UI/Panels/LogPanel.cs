@@ -213,7 +213,7 @@ public class ConsoleLogCell : ICell
         Input.Component.textComponent.supportRichText = true;
         Input.Component.lineType = InputField.LineType.MultiLineNewline;
         Input.Component.textComponent.font = UniversalUI.ConsoleFont;
-        Input.PlaceholderText.font = UniversalUI.ConsoleFont;
+        Input.Placeholder.font = UniversalUI.ConsoleFont;
 
         return UIRoot;
     }

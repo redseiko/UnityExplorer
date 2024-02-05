@@ -1,4 +1,6 @@
-﻿using UnityExplorer.CacheObject;
+﻿using TMPro;
+
+using UnityExplorer.CacheObject;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.ObjectPool;
@@ -131,7 +133,7 @@ namespace UnityExplorer.UI.Widgets
             // generic args
             this.genericArgumentsHolder = UIFactory.CreateUIObject("GenericHolder", UIRoot);
             UIFactory.SetLayoutElement(genericArgumentsHolder, flexibleWidth: 1000);
-            Text genericsTitle = UIFactory.CreateLabel(genericArgumentsHolder, "GenericsTitle", "Generic Arguments", TextAnchor.MiddleLeft);
+            TMP_Text genericsTitle = UIFactory.CreateTMPLabel(genericArgumentsHolder, "GenericsTitle", "Generic Arguments", TextAlignmentOptions.Left);
             UIFactory.SetLayoutElement(genericsTitle.gameObject, minHeight: 25, flexibleWidth: 1000);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(genericArgumentsHolder, false, false, true, true, 3);
             UIFactory.SetLayoutElement(genericArgumentsHolder, minHeight: 25, flexibleHeight: 750, minWidth: 50, flexibleWidth: 9999);
@@ -140,14 +142,14 @@ namespace UnityExplorer.UI.Widgets
             // args
             this.parametersHolder = UIFactory.CreateUIObject("ArgHolder", UIRoot);
             UIFactory.SetLayoutElement(parametersHolder, flexibleWidth: 1000);
-            Text argsTitle = UIFactory.CreateLabel(parametersHolder, "ArgsTitle", "Arguments", TextAnchor.MiddleLeft);
+            TMP_Text argsTitle = UIFactory.CreateTMPLabel(parametersHolder, "ArgsTitle", "Arguments", TextAlignmentOptions.Left);
             UIFactory.SetLayoutElement(argsTitle.gameObject, minHeight: 25, flexibleWidth: 1000);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(parametersHolder, false, false, true, true, 3);
             UIFactory.SetLayoutElement(parametersHolder, minHeight: 25, flexibleHeight: 750, minWidth: 50, flexibleWidth: 9999);
             //argHolder.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             // evaluate button
-            ButtonRef evalButton = UIFactory.CreateButton(UIRoot, "EvaluateButton", "Evaluate", new Color(0.2f, 0.2f, 0.2f));
+            ButtonRef evalButton = UIFactory.CreateTMPButton(UIRoot, "EvaluateButton", "Evaluate", new Color(0.2f, 0.2f, 0.2f));
             UIFactory.SetLayoutElement(evalButton.Component.gameObject, minHeight: 25, minWidth: 150, flexibleWidth: 0);
             evalButton.OnClick += () =>
             {

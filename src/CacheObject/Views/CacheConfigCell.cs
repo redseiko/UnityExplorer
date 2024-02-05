@@ -1,4 +1,6 @@
-﻿using UniverseLib.UI;
+﻿using TMPro;
+
+using UniverseLib.UI;
 
 namespace UnityExplorer.CacheObject.Views
 {
@@ -16,8 +18,8 @@ namespace UnityExplorer.CacheObject.Views
 
             // Left label
 
-            NameLabel = UIFactory.CreateLabel(UIRoot, "NameLabel", "<notset>", TextAnchor.MiddleLeft);
-            NameLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            NameLabel = UIFactory.CreateTMPLabel(UIRoot, "NameLabel", "<notset>", TextAlignmentOptions.Left);
+            NameLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(NameLabel.gameObject, minHeight: 25, flexibleWidth: 9999, flexibleHeight: 300);
             NameLayout = NameLabel.GetComponent<LayoutElement>();
 
@@ -27,14 +29,14 @@ namespace UnityExplorer.CacheObject.Views
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(horiGroup, false, false, true, true, 4, childAlignment: TextAnchor.UpperLeft);
             UIFactory.SetLayoutElement(horiGroup, minHeight: 25, minWidth: 200, flexibleWidth: 9999, flexibleHeight: 800);
 
-            SubContentButton = UIFactory.CreateButton(horiGroup, "SubContentButton", "▲", subInactiveColor);
+            SubContentButton = UIFactory.CreateTMPButton(horiGroup, "SubContentButton", "▲", subInactiveColor);
             UIFactory.SetLayoutElement(SubContentButton.Component.gameObject, minWidth: 25, minHeight: 25, flexibleWidth: 0, flexibleHeight: 0);
             SubContentButton.OnClick += SubContentClicked;
 
             // Type label
 
-            TypeLabel = UIFactory.CreateLabel(horiGroup, "TypeLabel", "<notset>", TextAnchor.MiddleLeft);
-            TypeLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            TypeLabel = UIFactory.CreateTMPLabel(horiGroup, "TypeLabel", "<notset>", TextAlignmentOptions.Left);
+            TypeLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(TypeLabel.gameObject, minHeight: 25, flexibleHeight: 150, minWidth: 60, flexibleWidth: 0);
 
             // Bool and number value interaction
@@ -44,19 +46,19 @@ namespace UnityExplorer.CacheObject.Views
             ToggleText.color = SignatureHighlighter.KeywordBlue;
             Toggle.onValueChanged.AddListener(ToggleClicked);
 
-            InputField = UIFactory.CreateInputField(horiGroup, "InputField", "...");
+            InputField = UIFactory.CreateTMPInputField(horiGroup, "InputField", "...");
             UIFactory.SetLayoutElement(InputField.UIRoot, minWidth: 150, flexibleWidth: 0, minHeight: 25, flexibleHeight: 0);
 
             // Apply
 
-            ApplyButton = UIFactory.CreateButton(horiGroup, "ApplyButton", "Apply", new Color(0.15f, 0.19f, 0.15f));
+            ApplyButton = UIFactory.CreateTMPButton(horiGroup, "ApplyButton", "Apply", new Color(0.15f, 0.19f, 0.15f));
             UIFactory.SetLayoutElement(ApplyButton.Component.gameObject, minWidth: 70, minHeight: 25, flexibleWidth: 0, flexibleHeight: 0);
             ApplyButton.OnClick += ApplyClicked;
 
             // Main value label
 
-            ValueLabel = UIFactory.CreateLabel(horiGroup, "ValueLabel", "Value goes here", TextAnchor.MiddleLeft);
-            ValueLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            ValueLabel = UIFactory.CreateTMPLabel(horiGroup, "ValueLabel", "Value goes here", TextAlignmentOptions.Left);
+            ValueLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(ValueLabel.gameObject, minHeight: 25, flexibleHeight: 150, flexibleWidth: 9999);
 
             // Subcontent

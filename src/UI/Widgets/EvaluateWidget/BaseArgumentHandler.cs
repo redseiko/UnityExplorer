@@ -1,4 +1,6 @@
-﻿using UnityExplorer.UI.Widgets.AutoComplete;
+﻿using TMPro;
+
+using UnityExplorer.UI.Widgets.AutoComplete;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.ObjectPool;
@@ -7,8 +9,8 @@ namespace UnityExplorer.UI.Widgets
 {
     public abstract class BaseArgumentHandler : IPooledObject
     {
-        internal Text argNameLabel;
-        internal InputFieldRef inputField;
+        internal TMP_Text argNameLabel;
+        internal TMPInputFieldRef inputField;
         internal TypeCompleter typeCompleter;
 
         // IPooledObject
@@ -24,13 +26,13 @@ namespace UnityExplorer.UI.Widgets
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(UIRoot, false, false, true, true, 5);
             UIRoot.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            argNameLabel = UIFactory.CreateLabel(UIRoot, "ArgLabel", "not set", TextAnchor.MiddleLeft);
+            argNameLabel = UIFactory.CreateTMPLabel(UIRoot, "ArgLabel", "not set", TextAlignmentOptions.Left);
             UIFactory.SetLayoutElement(argNameLabel.gameObject, minWidth: 40, flexibleWidth: 90, minHeight: 25, flexibleHeight: 50);
-            argNameLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            argNameLabel.textWrappingMode = TextWrappingModes.Normal;
 
-            inputField = UIFactory.CreateInputField(UIRoot, "InputField", "...");
+            inputField = UIFactory.CreateTMPInputField(UIRoot, "InputField", "...");
             UIFactory.SetLayoutElement(inputField.UIRoot, minHeight: 25, flexibleHeight: 50, minWidth: 100, flexibleWidth: 1000);
-            inputField.Component.lineType = InputField.LineType.MultiLineNewline;
+            inputField.Component.lineType = TMP_InputField.LineType.MultiLineNewline;
             inputField.UIRoot.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             typeCompleter = new TypeCompleter(typeof(object), this.inputField)

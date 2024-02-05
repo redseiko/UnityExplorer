@@ -1,4 +1,7 @@
-﻿using UnityExplorer.Config;
+﻿using TMPro;
+
+using UnityExplorer.Config;
+
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 
@@ -9,11 +12,11 @@ namespace UnityExplorer.CacheObject.IValues
         private string RealValue;
         public string EditedValue = "";
 
-        public InputFieldRef inputField;
+        public TMPInputFieldRef inputField;
         public ButtonRef ApplyButton;
 
         public GameObject SaveFileRow;
-        public InputFieldRef SaveFilePath;
+        public TMPInputFieldRef SaveFilePath;
 
         public override void OnBorrowed(CacheObjectBase owner)
         {
@@ -95,29 +98,32 @@ namespace UnityExplorer.CacheObject.IValues
             UIFactory.SetLayoutElement(SaveFileRow, flexibleWidth: 9999);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(SaveFileRow, false, true, true, true, 3);
 
-            UIFactory.CreateLabel(SaveFileRow, "Info", "<color=red>String is too long! Save to file if you want to see the full string.</color>",
-                TextAnchor.MiddleLeft);
+            UIFactory.CreateTMPLabel(
+                SaveFileRow,
+                "Info",
+                "<color=#FF0000FF>String is too long! Save to file if you want to see the full string.</color>",
+                TextAlignmentOptions.Left);
 
             GameObject horizRow = UIFactory.CreateUIObject("Horiz", SaveFileRow);
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(horizRow, false, false, true, true, 4);
 
-            ButtonRef saveButton = UIFactory.CreateButton(horizRow, "SaveButton", "Save file");
+            ButtonRef saveButton = UIFactory.CreateTMPButton(horizRow, "SaveButton", "Save file");
             UIFactory.SetLayoutElement(saveButton.Component.gameObject, minHeight: 25, minWidth: 100, flexibleWidth: 0);
             saveButton.OnClick += OnSaveFileClicked;
 
-            SaveFilePath = UIFactory.CreateInputField(horizRow, "SaveInput", "...");
+            SaveFilePath = UIFactory.CreateTMPInputField(horizRow, "SaveInput", "...");
             UIFactory.SetLayoutElement(SaveFilePath.UIRoot, minHeight: 25, flexibleWidth: 9999);
 
             // Main Input / apply
 
-            ApplyButton = UIFactory.CreateButton(UIRoot, "ApplyButton", "Apply", new Color(0.2f, 0.27f, 0.2f));
+            ApplyButton = UIFactory.CreateTMPButton(UIRoot, "ApplyButton", "Apply", new Color(0.2f, 0.27f, 0.2f));
             UIFactory.SetLayoutElement(ApplyButton.Component.gameObject, minHeight: 25, minWidth: 100, flexibleWidth: 0);
             ApplyButton.OnClick += OnApplyClicked;
 
-            inputField = UIFactory.CreateInputField(UIRoot, "InputField", "empty");
+            inputField = UIFactory.CreateTMPInputField(UIRoot, "InputField", "empty");
             inputField.UIRoot.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             UIFactory.SetLayoutElement(inputField.UIRoot, minHeight: 25, flexibleHeight: 500, flexibleWidth: 9999);
-            inputField.Component.lineType = InputField.LineType.MultiLineNewline;
+            inputField.Component.lineType = TMPro.TMP_InputField.LineType.MultiLineNewline;
             inputField.OnValueChanged += OnInputChanged;
 
             return UIRoot;

@@ -1,4 +1,7 @@
 ﻿using HarmonyLib;
+
+using TMPro;
+
 using UnityExplorer.UI.Panels;
 using UnityExplorer.UI.Widgets.AutoComplete;
 using UniverseLib.UI;
@@ -17,7 +20,7 @@ namespace UnityExplorer.UI.Widgets
         private bool usingBasicLabel;
         private object basicValue;
         private GameObject basicLabelHolder;
-        private Text basicLabel;
+        private TMP_Text basicLabel;
         private ButtonRef pasteButton;
 
         public void OnBorrowed(ParameterInfo paramInfo)
@@ -28,7 +31,7 @@ namespace UnityExplorer.UI.Widgets
             if (paramType.IsByRef)
                 paramType = paramType.GetElementType();
 
-            this.argNameLabel.text =
+            argNameLabel.text =
                 $"{SignatureHighlighter.Parse(paramType, false)} <color={SignatureHighlighter.LOCAL_ARG}>{paramInfo.Name}</color>";
 
             if (ParseUtility.CanParse(paramType) || typeof(Type).IsAssignableFrom(paramType))
@@ -44,13 +47,13 @@ namespace UnityExplorer.UI.Widgets
                 if (!typeCompleter.Enabled)
                 {
                     if (paramType == typeof(string))
-                        inputField.PlaceholderText.text = "...";
+                        inputField.PlaceholderText = "...";
                     else
-                        inputField.PlaceholderText.text = $"eg. {ParseUtility.GetExampleInput(paramType)}";
+                        inputField.PlaceholderText = $"eg. {ParseUtility.GetExampleInput(paramType)}";
                 }
                 else
                 {
-                    inputField.PlaceholderText.text = "Enter a Type name...";
+                    inputField.PlaceholderText = "Enter a Type name...";
                     this.typeCompleter.BaseType = typeof(object);
                     this.typeCompleter.CacheTypes();
                 }
@@ -149,19 +152,19 @@ namespace UnityExplorer.UI.Widgets
                 Enabled = false
             };
 
-            enumHelperButton = UIFactory.CreateButton(UIRoot, "EnumHelper", "▼");
+            enumHelperButton = UIFactory.CreateTMPButton(UIRoot, "EnumHelper", "▼");
             UIFactory.SetLayoutElement(enumHelperButton.Component.gameObject, minWidth: 25, minHeight: 25, flexibleWidth: 0, flexibleHeight: 0);
             enumHelperButton.OnClick += enumCompleter.HelperButtonClicked;
 
             basicLabelHolder = UIFactory.CreateHorizontalGroup(UIRoot, "BasicLabelHolder", true, true, true, true, bgColor: new(0.1f, 0.1f, 0.1f));
             UIFactory.SetLayoutElement(basicLabelHolder, minHeight: 25, flexibleHeight: 50, minWidth: 100, flexibleWidth: 1000);
-            basicLabel = UIFactory.CreateLabel(basicLabelHolder, "BasicLabel", "null", TextAnchor.MiddleLeft);
+            basicLabel = UIFactory.CreateTMPLabel(basicLabelHolder, "BasicLabel", "null", TextAlignmentOptions.Left);
             basicLabel.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            pasteButton = UIFactory.CreateButton(UIRoot, "PasteButton", "Paste", new Color(0.13f, 0.13f, 0.13f, 1f));
+            pasteButton = UIFactory.CreateTMPButton(UIRoot, "PasteButton", "Paste", new Color(0.13f, 0.13f, 0.13f, 1f));
             UIFactory.SetLayoutElement(pasteButton.Component.gameObject, minHeight: 25, minWidth: 28, flexibleWidth: 0);
-            pasteButton.ButtonText.color = Color.green;
-            pasteButton.ButtonText.fontSize = 10;
+            pasteButton.ButtonTMPText.color = Color.green;
+            pasteButton.ButtonTMPText.fontSize = 10f;
             pasteButton.OnClick += OnPasteClicked;
         }
     }

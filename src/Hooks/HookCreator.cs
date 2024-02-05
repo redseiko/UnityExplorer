@@ -308,7 +308,7 @@ namespace UnityExplorer.Hooks
             EditorInputText.color = Color.clear;
             EditorInput.Component.customCaretColor = true;
             EditorInput.Component.caretColor = Color.white;
-            EditorInput.PlaceholderText.fontSize = fontSize;
+            EditorInput.Placeholder.fontSize = fontSize;
 
             // Lexer highlight text overlay
             GameObject highlightTextObj = UIFactory.CreateUIObject("HighlightText", EditorInputText.gameObject);
@@ -326,7 +326,7 @@ namespace UnityExplorer.Hooks
 
             // Set fonts
             EditorInputText.font = UniversalUI.ConsoleFont;
-            EditorInput.PlaceholderText.font = UniversalUI.ConsoleFont;
+            EditorInput.Placeholder.font = UniversalUI.ConsoleFont;
             EditorHighlightText.font = UniversalUI.ConsoleFont;
         }
     }

@@ -9,6 +9,7 @@ namespace UnityExplorer.CSConsole
     public class CSAutoCompleter : ISuggestionProvider
     {
         public InputFieldRef InputField => ConsoleController.Input;
+        public IBaseInputFieldRef BaseInputField => InputField;
 
         public bool AnchorToCaretPosition => true;
 
@@ -132,7 +133,7 @@ namespace UnityExplorer.CSConsole
         private readonly Dictionary<string, string> keywordHighlights = new();
 
         private readonly StringBuilder highlightBuilder = new();
-        private const string OPEN_HIGHLIGHT = "<color=cyan>";
+        private const string OPEN_HIGHLIGHT = "<color=#00FFFFFF>";
 
         private string GetHighlightString(string prefix, string completion)
         {

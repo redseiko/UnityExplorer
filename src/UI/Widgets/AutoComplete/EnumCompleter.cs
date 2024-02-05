@@ -23,7 +23,8 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
 
         public Type EnumType { get; set; }
 
-        public InputFieldRef InputField { get; }
+        public InputFieldRef InputField => throw new NotSupportedException();
+        public IBaseInputFieldRef BaseInputField { get; }
         public bool AnchorToCaretPosition => false;
 
         private readonly List<Suggestion> suggestions = new();
@@ -35,12 +36,12 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
 
         bool ISuggestionProvider.AllowNavigation => false;
 
-        public EnumCompleter(Type enumType, InputFieldRef inputField)
+        public EnumCompleter(Type enumType, IBaseInputFieldRef inputField)
         {
             EnumType = enumType;
-            InputField = inputField;
+            BaseInputField = inputField;
 
-            inputField.OnValueChanged += OnInputFieldChanged;
+            BaseInputField.OnValueChanged += OnInputFieldChanged;
 
             if (EnumType != null)
                 CacheEnumValues();
@@ -72,18 +73,18 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
         {
             chosenSuggestion = suggestion.UnderlyingValue;
 
-            string lastInput = GetLastSplitInput(InputField.Text);
+            string lastInput = GetLastSplitInput(BaseInputField.Text);
 
             if (lastInput != suggestion.UnderlyingValue)
             {
-                string valueToSet = InputField.Text;
+                string valueToSet = BaseInputField.Text;
 
                 if (valueToSet.Length > 0)
-                    valueToSet = valueToSet.Substring(0, InputField.Text.Length - lastInput.Length);
+                    valueToSet = valueToSet.Substring(0, BaseInputField.Text.Length - lastInput.Length);
 
                 valueToSet += suggestion.UnderlyingValue;
 
-                InputField.Text = valueToSet;
+                BaseInputField.Text = valueToSet;
 
                 //InputField.Text += suggestion.UnderlyingValue.Substring(lastInput.Length);
             }

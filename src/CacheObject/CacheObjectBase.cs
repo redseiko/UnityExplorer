@@ -321,7 +321,7 @@ namespace UnityExplorer.CacheObject
             if (args.valueActive)
             {
                 cell.ValueLabel.text = ValueLabelText;
-                cell.ValueLabel.supportRichText = args.valueRichText;
+                cell.ValueLabel.richText = args.valueRichText;
                 cell.ValueLabel.color = args.valueColor;
             }
             else

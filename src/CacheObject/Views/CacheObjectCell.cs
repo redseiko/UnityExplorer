@@ -1,4 +1,6 @@
-﻿using UnityExplorer.UI.Panels;
+﻿using TMPro;
+
+using UnityExplorer.UI.Panels;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ScrollView;
@@ -40,13 +42,13 @@ namespace UnityExplorer.CacheObject.Views
         public LayoutElement RightGroupLayout;
         public GameObject SubContentHolder;
 
-        public Text NameLabel;
-        public InputFieldRef HiddenNameLabel; // for selecting the name label
-        public Text TypeLabel;
-        public Text ValueLabel;
+        public TMP_Text NameLabel;
+        public TMPInputFieldRef HiddenNameLabel; // for selecting the name label
+        public TMP_Text TypeLabel;
+        public TMP_Text ValueLabel;
         public Toggle Toggle;
         public Text ToggleText;
-        public InputFieldRef InputField;
+        public TMPInputFieldRef InputField;
 
         public ButtonRef InspectButton;
         public ButtonRef SubContentButton;
@@ -91,7 +93,7 @@ namespace UnityExplorer.CacheObject.Views
 
         public void RefreshSubcontentButton()
         {
-            this.SubContentButton.ButtonText.text = SubContentHolder.activeSelf ? "▼" : "▲";
+            this.SubContentButton.ButtonTMPText.text = SubContentHolder.activeSelf ? "▼" : "▲";
             Color color = SubContentHolder.activeSelf ? subActiveColor : subInactiveColor;
             RuntimeHelper.SetColorBlock(SubContentButton.Component, color, color * 1.3f);
         }
@@ -115,18 +117,18 @@ namespace UnityExplorer.CacheObject.Views
 
             // Left name label
 
-            NameLabel = UIFactory.CreateLabel(horiRow, "NameLabel", "<notset>", TextAnchor.MiddleLeft);
-            NameLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            NameLabel = UIFactory.CreateTMPLabel(horiRow, "NameLabel", "<notset>", TextAlignmentOptions.Left);
+            NameLabel.textWrappingMode = TextWrappingModes.Normal;
             NameLayout = UIFactory.SetLayoutElement(NameLabel.gameObject, minHeight: 25, minWidth: 20, flexibleHeight: 300, flexibleWidth: 0);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(NameLabel.gameObject, true, true, true, true);
 
-            HiddenNameLabel = UIFactory.CreateInputField(NameLabel.gameObject, "HiddenNameLabel", "");
+            HiddenNameLabel = UIFactory.CreateTMPInputField(NameLabel.gameObject, "HiddenNameLabel", "");
             RectTransform hiddenRect = HiddenNameLabel.Component.GetComponent<RectTransform>();
             hiddenRect.anchorMin = Vector2.zero;
             hiddenRect.anchorMax = Vector2.one;
             HiddenNameLabel.Component.readOnly = true;
-            HiddenNameLabel.Component.lineType = UnityEngine.UI.InputField.LineType.MultiLineNewline;
-            HiddenNameLabel.Component.textComponent.horizontalOverflow = HorizontalWrapMode.Wrap;
+            HiddenNameLabel.Component.lineType = TMP_InputField.LineType.MultiLineNewline;
+            HiddenNameLabel.Component.textComponent.textWrappingMode = TextWrappingModes.Normal;
             HiddenNameLabel.Component.gameObject.GetComponent<Image>().color = Color.clear;
             HiddenNameLabel.Component.textComponent.color = Color.clear;
             UIFactory.SetLayoutElement(HiddenNameLabel.Component.gameObject, minHeight: 25, minWidth: 20, flexibleHeight: 300, flexibleWidth: 0);
@@ -146,14 +148,14 @@ namespace UnityExplorer.CacheObject.Views
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(rightHoriGroup, false, false, true, true, 4, childAlignment: TextAnchor.UpperLeft);
             UIFactory.SetLayoutElement(rightHoriGroup, minHeight: 25, minWidth: 200, flexibleWidth: 9999, flexibleHeight: 800);
 
-            SubContentButton = UIFactory.CreateButton(rightHoriGroup, "SubContentButton", "▲", subInactiveColor);
+            SubContentButton = UIFactory.CreateTMPButton(rightHoriGroup, "SubContentButton", "▲", subInactiveColor);
             UIFactory.SetLayoutElement(SubContentButton.Component.gameObject, minWidth: 25, minHeight: 25, flexibleWidth: 0, flexibleHeight: 0);
             SubContentButton.OnClick += SubContentClicked;
 
             // Type label
 
-            TypeLabel = UIFactory.CreateLabel(rightHoriGroup, "ReturnLabel", "<notset>", TextAnchor.MiddleLeft);
-            TypeLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            TypeLabel = UIFactory.CreateTMPLabel(rightHoriGroup, "ReturnLabel", "<notset>", TextAlignmentOptions.Left);
+            TypeLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(TypeLabel.gameObject, minHeight: 25, flexibleHeight: 150, minWidth: 45, flexibleWidth: 0);
 
             // Bool and number value interaction
@@ -163,25 +165,25 @@ namespace UnityExplorer.CacheObject.Views
             ToggleText.color = SignatureHighlighter.KeywordBlue;
             Toggle.onValueChanged.AddListener(ToggleClicked);
 
-            InputField = UIFactory.CreateInputField(rightHoriGroup, "InputField", "...");
+            InputField = UIFactory.CreateTMPInputField(rightHoriGroup, "InputField", "...");
             UIFactory.SetLayoutElement(InputField.UIRoot, minWidth: 150, flexibleWidth: 0, minHeight: 25, flexibleHeight: 0);
 
             // Apply
 
-            ApplyButton = UIFactory.CreateButton(rightHoriGroup, "ApplyButton", "Apply", new Color(0.15f, 0.19f, 0.15f));
+            ApplyButton = UIFactory.CreateTMPButton(rightHoriGroup, "ApplyButton", "Apply", new Color(0.15f, 0.19f, 0.15f));
             UIFactory.SetLayoutElement(ApplyButton.Component.gameObject, minWidth: 70, minHeight: 25, flexibleWidth: 0, flexibleHeight: 0);
             ApplyButton.OnClick += ApplyClicked;
 
             // Inspect 
 
-            InspectButton = UIFactory.CreateButton(rightHoriGroup, "InspectButton", "Inspect", new Color(0.15f, 0.15f, 0.15f));
+            InspectButton = UIFactory.CreateTMPButton(rightHoriGroup, "InspectButton", "Inspect", new Color(0.15f, 0.15f, 0.15f));
             UIFactory.SetLayoutElement(InspectButton.Component.gameObject, minWidth: 70, flexibleWidth: 0, minHeight: 25);
             InspectButton.OnClick += InspectClicked;
 
             // Main value label
 
-            ValueLabel = UIFactory.CreateLabel(rightHoriGroup, "ValueLabel", "Value goes here", TextAnchor.MiddleLeft);
-            ValueLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            ValueLabel = UIFactory.CreateTMPLabel(rightHoriGroup, "ValueLabel", "Value goes here", TextAlignmentOptions.Left);
+            ValueLabel.textWrappingMode = TextWrappingModes.Normal;
             UIFactory.SetLayoutElement(ValueLabel.gameObject, minHeight: 25, flexibleHeight: 150, flexibleWidth: 9999);
 
             // Copy and Paste buttons
@@ -190,16 +192,16 @@ namespace UnityExplorer.CacheObject.Views
                 bgColor: new(1, 1, 1, 0), childAlignment: TextAnchor.MiddleLeft);
             UIFactory.SetLayoutElement(buttonHolder, minWidth: 60, flexibleWidth: 0);
 
-            CopyButton = UIFactory.CreateButton(buttonHolder, "CopyButton", "Copy", new Color(0.13f, 0.13f, 0.13f, 1f));
+            CopyButton = UIFactory.CreateTMPButton(buttonHolder, "CopyButton", "Copy", new Color(0.13f, 0.13f, 0.13f, 1f));
             UIFactory.SetLayoutElement(CopyButton.Component.gameObject, minHeight: 25, minWidth: 28, flexibleWidth: 0);
-            CopyButton.ButtonText.color = Color.yellow;
-            CopyButton.ButtonText.fontSize = 10;
+            CopyButton.ButtonTMPText.color = Color.yellow;
+            CopyButton.ButtonTMPText.fontSize = 10;
             CopyButton.OnClick += OnCopyClicked;
 
-            PasteButton = UIFactory.CreateButton(buttonHolder, "PasteButton", "Paste", new Color(0.13f, 0.13f, 0.13f, 1f));
+            PasteButton = UIFactory.CreateTMPButton(buttonHolder, "PasteButton", "Paste", new Color(0.13f, 0.13f, 0.13f, 1f));
             UIFactory.SetLayoutElement(PasteButton.Component.gameObject, minHeight: 25, minWidth: 28, flexibleWidth: 0);
-            PasteButton.ButtonText.color = Color.green;
-            PasteButton.ButtonText.fontSize = 10;
+            PasteButton.ButtonTMPText.color = Color.green;
+            PasteButton.ButtonTMPText.fontSize = 10;
             PasteButton.OnClick += OnPasteClicked;
 
             // Subcontent

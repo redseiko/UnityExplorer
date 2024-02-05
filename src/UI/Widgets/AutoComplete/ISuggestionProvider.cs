@@ -5,6 +5,8 @@ namespace UnityExplorer.UI.Widgets.AutoComplete
     public interface ISuggestionProvider
     {
         InputFieldRef InputField { get; }
+        IBaseInputFieldRef BaseInputField { get; }
+
         bool AnchorToCaretPosition { get; }
 
         bool AllowNavigation { get; }

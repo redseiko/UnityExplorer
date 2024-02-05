@@ -100,16 +100,16 @@ namespace UnityExplorer.CacheObject
                 if (HasArguments)
                 {
                     if (!Evaluating)
-                        cell.EvaluateButton.ButtonText.text = $"Evaluate ({Arguments.Length + GenericArguments.Length})";
+                        cell.EvaluateButton.ButtonTMPText.text = $"Evaluate ({Arguments.Length + GenericArguments.Length})";
                     else
                     {
-                        cell.EvaluateButton.ButtonText.text = "Hide";
+                        cell.EvaluateButton.ButtonTMPText.text = "Hide";
                         Evaluator.UIRoot.transform.SetParent(cell.EvaluateHolder.transform, false);
                         RuntimeHelper.SetColorBlock(cell.EvaluateButton.Component, evalEnabledColor, evalEnabledColor * 1.3f);
                     }
                 }
                 else
-                    cell.EvaluateButton.ButtonText.text = "Evaluate";
+                    cell.EvaluateButton.ButtonTMPText.text = "Evaluate";
 
                 if (!Evaluating)
                     RuntimeHelper.SetColorBlock(cell.EvaluateButton.Component, evalDisabledColor, evalDisabledColor * 1.3f);

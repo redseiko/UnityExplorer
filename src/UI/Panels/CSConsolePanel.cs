@@ -163,7 +163,7 @@ public class CSConsolePanel : UEPanel
         InputText.color = Color.clear;
         Input.Component.customCaretColor = true;
         Input.Component.caretColor = Color.white;
-        Input.PlaceholderText.fontSize = fontSize;
+        Input.Placeholder.fontSize = fontSize;
 
         // Lexer highlight text overlay
         GameObject highlightTextObj = UIFactory.CreateUIObject("HighlightText", InputText.gameObject);
@@ -181,7 +181,7 @@ public class CSConsolePanel : UEPanel
 
         // Set fonts
         InputText.font = UniversalUI.ConsoleFont;
-        Input.PlaceholderText.font = UniversalUI.ConsoleFont;
+        Input.Placeholder.font = UniversalUI.ConsoleFont;
         HighlightText.font = UniversalUI.ConsoleFont;
 
         RuntimeHelper.StartCoroutine(DelayedLayoutSetup());

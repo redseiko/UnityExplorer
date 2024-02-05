@@ -168,7 +168,7 @@ public class AutoCompleteModal : UEPanel
 
         if (Suggestions.Any() && CurrentHandler != null)
         {
-            if (!CurrentHandler.InputField.UIRoot.activeInHierarchy)
+            if (!CurrentHandler.BaseInputField.GameObject.activeInHierarchy)
                 ReleaseOwnership(CurrentHandler);
             else
                 UpdatePosition();
@@ -229,27 +229,24 @@ public class AutoCompleteModal : UEPanel
         if (CurrentHandler == null)
             return;
 
-        InputFieldRef input = CurrentHandler.InputField;
+        IBaseInputFieldRef input = CurrentHandler.BaseInputField;
 
         //if (!input.Component.isFocused 
         //    || (input.Component.caretPosition == lastCaretPosition && input.UIRoot.transform.position == lastInputPosition))
         //    return;
 
-        if (input.Component.caretPosition == lastCaretPosition && input.UIRoot.transform.position == lastInputPosition)
+        if (input.CaretPosition == lastCaretPosition && input.Transform.position == lastInputPosition)
             return;
             
         if (CurrentHandler.AnchorToCaretPosition)
         {
-            if (!input.Component.isFocused)
+            if (!input.IsFocused)
                 return;
 
-            TextGenerator textGen = input.Component.cachedInputTextGenerator;
-            int caretIdx = Math.Max(0, Math.Min(textGen.characterCount - 1, input.Component.caretPosition));
-
             // normalize the caret horizontal position
-            Vector3 caretPos = textGen.characters[caretIdx].cursorPos;
+            Vector3 caretPos = input.GetCaretScreenPosition();
             // transform to world point
-            caretPos = input.UIRoot.transform.TransformPoint(caretPos);
+            caretPos = input.Transform.TransformPoint(caretPos);
             caretPos += new Vector3(input.Transform.rect.width * 0.5f, -(input.Transform.rect.height * 0.5f), 0);
 
             uiRoot.transform.position = new Vector3(caretPos.x + 10, caretPos.y - 30, 0);
@@ -259,8 +256,8 @@ public class AutoCompleteModal : UEPanel
             uiRoot.transform.position = input.Transform.position + new Vector3(-(input.Transform.rect.width / 2) + 10, -20, 0);
         }
 
-        lastInputPosition = input.UIRoot.transform.position;
-        lastCaretPosition = input.Component.caretPosition;
+        lastInputPosition = input.Transform.position;
+        lastCaretPosition = input.CaretPosition;
 
         this.Dragger.OnEndResize();
     }
