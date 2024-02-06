@@ -1,221 +1,223 @@
-﻿using UnityExplorer.Config;
+﻿namespace UnityExplorer.Inspectors;
+
+using TMPro;
+
+using UnityExplorer.Config;
 using UnityExplorer.Inspectors.MouseInspectors;
 using UnityExplorer.UI;
 using UnityExplorer.UI.Panels;
+
 using UniverseLib.Input;
 using UniverseLib.UI;
 using UniverseLib.UI.Panels;
 
-namespace UnityExplorer.Inspectors
+public enum MouseInspectMode
 {
-    public enum MouseInspectMode
+    World,
+    UI
+}
+
+public class MouseInspector : PanelBase
+{
+    public static MouseInspector Instance { get; private set; }
+
+    private readonly WorldInspector worldInspector;
+    private readonly UiInspector uiInspector;
+
+    public static bool Inspecting { get; set; }
+    public static MouseInspectMode Mode { get; set; }
+
+    public MouseInspectorBase CurrentInspector => Mode switch
     {
-        World,
-        UI
+        MouseInspectMode.UI => uiInspector,
+        MouseInspectMode.World => worldInspector,
+        _ => null,
+    };
+
+    private static Vector3 lastMousePos;
+
+    // UIPanel
+    internal static readonly string UIBaseGUID = $"{ExplorerCore.GUID}.MouseInspector";
+    internal static UIBase inspectorUIBase;
+
+    public override string Name => "Inspect Under Mouse";
+    public override int MinWidth => -1;
+    public override int MinHeight => -1;
+    public override Vector2 DefaultAnchorMin => Vector2.zero;
+    public override Vector2 DefaultAnchorMax => Vector2.zero;
+
+    public override bool CanDragAndResize => false;
+
+    internal TMP_Text objNameLabel;
+    internal TMP_Text objPathLabel;
+    internal TMP_Text mousePosLabel;
+
+    public MouseInspector(UIBase owner) : base(owner)
+    {
+        Instance = this;
+        worldInspector = new WorldInspector();
+        uiInspector = new UiInspector();
     }
 
-    public class MouseInspector : PanelBase
+    public static void OnDropdownSelect(int index)
     {
-        public static MouseInspector Instance { get; private set; }
-
-        private readonly WorldInspector worldInspector;
-        private readonly UiInspector uiInspector;
-
-        public static bool Inspecting { get; set; }
-        public static MouseInspectMode Mode { get; set; }
-
-        public MouseInspectorBase CurrentInspector => Mode switch
+        switch (index)
         {
-            MouseInspectMode.UI => uiInspector,
-            MouseInspectMode.World => worldInspector,
-            _ => null,
-        };
+            case 0: return;
+            case 1: Instance.StartInspect(MouseInspectMode.World); break;
+            case 2: Instance.StartInspect(MouseInspectMode.UI); break;
+        }
+        InspectorPanel.Instance.MouseInspectDropdown.value = 0;
+    }
 
-        private static Vector3 lastMousePos;
+    public void StartInspect(MouseInspectMode mode)
+    {
+        Mode = mode;
+        Inspecting = true;
 
-        // UIPanel
-        internal static readonly string UIBaseGUID = $"{ExplorerCore.GUID}.MouseInspector";
-        internal static UIBase inspectorUIBase;
+        CurrentInspector.OnBeginMouseInspect();
 
-        public override string Name => "Inspect Under Mouse";
-        public override int MinWidth => -1;
-        public override int MinHeight => -1;
-        public override Vector2 DefaultAnchorMin => Vector2.zero;
-        public override Vector2 DefaultAnchorMax => Vector2.zero;
+        PanelManager.ForceEndResize();
+        UIManager.NavBarRect.gameObject.SetActive(false);
+        UIManager.UiBase.Panels.PanelHolder.SetActive(false);
+        UIManager.UiBase.SetOnTop();
 
-        public override bool CanDragAndResize => false;
+        SetActive(true);
+    }
 
-        internal Text objNameLabel;
-        internal Text objPathLabel;
-        internal Text mousePosLabel;
+    internal void ClearHitData()
+    {
+        CurrentInspector.ClearHitData();
 
-        public MouseInspector(UIBase owner) : base(owner)
+        objNameLabel.text = "No hits...";
+        objPathLabel.text = "";
+    }
+
+    public void StopInspect()
+    {
+        CurrentInspector.OnEndInspect();
+        ClearHitData();
+        Inspecting = false;
+
+        UIManager.NavBarRect.gameObject.SetActive(true);
+        UIManager.UiBase.Panels.PanelHolder.SetActive(true);
+
+        Dropdown drop = InspectorPanel.Instance.MouseInspectDropdown;
+        if (drop.transform.Find("Dropdown List") is Transform list)
+            drop.DestroyDropdownList(list.gameObject);
+
+        UIRoot.SetActive(false);
+    }
+
+    private static float timeOfLastRaycast;
+
+    public bool TryUpdate()
+    {
+        if (InputManager.GetKeyDown(ConfigManager.World_MouseInspect_Keybind.Value))
+            Instance.StartInspect(MouseInspectMode.World);
+
+        if (InputManager.GetKeyDown(ConfigManager.UI_MouseInspect_Keybind.Value))
+            Instance.StartInspect(MouseInspectMode.UI);
+
+        if (Inspecting)
+            UpdateInspect();
+
+        return Inspecting;
+    }
+
+    public void UpdateInspect()
+    {
+        if (InputManager.GetKeyDown(KeyCode.Escape))
         {
-            Instance = this;
-            worldInspector = new WorldInspector();
-            uiInspector = new UiInspector();
+            StopInspect();
+            return;
         }
 
-        public static void OnDropdownSelect(int index)
+        if (InputManager.GetMouseButtonDown(0))
         {
-            switch (index)
-            {
-                case 0: return;
-                case 1: Instance.StartInspect(MouseInspectMode.World); break;
-                case 2: Instance.StartInspect(MouseInspectMode.UI); break;
-            }
-            InspectorPanel.Instance.MouseInspectDropdown.value = 0;
+            CurrentInspector.OnSelectMouseInspect();
+            StopInspect();
+            return;
         }
 
-        public void StartInspect(MouseInspectMode mode)
-        {
-            Mode = mode;
-            Inspecting = true;
+        Vector3 mousePos = InputManager.MousePosition;
+        if (mousePos != lastMousePos)
+            UpdatePosition(mousePos);
 
-            CurrentInspector.OnBeginMouseInspect();
+        if (!timeOfLastRaycast.OccuredEarlierThan(0.1f))
+            return;
+        timeOfLastRaycast = Time.realtimeSinceStartup;
 
-            PanelManager.ForceEndResize();
-            UIManager.NavBarRect.gameObject.SetActive(false);
-            UIManager.UiBase.Panels.PanelHolder.SetActive(false);
-            UIManager.UiBase.SetOnTop();
+        CurrentInspector.UpdateMouseInspect(mousePos);
+    }
 
-            SetActive(true);
-        }
+    internal void UpdatePosition(Vector2 mousePos)
+    {
+        lastMousePos = mousePos;
 
-        internal void ClearHitData()
-        {
-            CurrentInspector.ClearHitData();
+        // use the raw mouse pos for the label
+        mousePosLabel.text = $"<color=#808080FF>Mouse Position:</color> {mousePos}";
 
-            objNameLabel.text = "No hits...";
-            objPathLabel.text = "";
-        }
+        // constrain the mouse pos we use within certain bounds
+        if (mousePos.x < 350)
+            mousePos.x = 350;
+        if (mousePos.x > Screen.width - 350)
+            mousePos.x = Screen.width - 350;
+        if (mousePos.y < Rect.rect.height)
+            mousePos.y += Rect.rect.height + 10;
+        else
+            mousePos.y -= 10;
 
-        public void StopInspect()
-        {
-            CurrentInspector.OnEndInspect();
-            ClearHitData();
-            Inspecting = false;
+        // calculate and set our UI position
+        Vector3 inversePos = inspectorUIBase.RootObject.transform.InverseTransformPoint(mousePos);
+        UIRoot.transform.localPosition = new Vector3(inversePos.x, inversePos.y, 0);
+    }
 
-            UIManager.NavBarRect.gameObject.SetActive(true);
-            UIManager.UiBase.Panels.PanelHolder.SetActive(true);
+    // UI Construction
 
-            Dropdown drop = InspectorPanel.Instance.MouseInspectDropdown;
-            if (drop.transform.Find("Dropdown List") is Transform list)
-                drop.DestroyDropdownList(list.gameObject);
+    public override void SetDefaultSizeAndPosition()
+    {
+        base.SetDefaultSizeAndPosition();
 
-            UIRoot.SetActive(false);
-        }
+        Rect.anchorMin = Vector2.zero;
+        Rect.anchorMax = Vector2.zero;
+        Rect.pivot = new Vector2(0.5f, 1);
+        Rect.sizeDelta = new Vector2(700, 150);
+    }
 
-        private static float timeOfLastRaycast;
+    protected override void ConstructPanelContent()
+    {
+        // hide title bar
+        this.TitleBar.SetActive(false);
+        this.UIRoot.transform.SetParent(UIManager.UIRoot.transform, false);
 
-        public bool TryUpdate()
-        {
-            if (InputManager.GetKeyDown(ConfigManager.World_MouseInspect_Keybind.Value))
-                Instance.StartInspect(MouseInspectMode.World);
+        GameObject inspectContent = UIFactory.CreateVerticalGroup(this.ContentRoot, "InspectContent", true, true, true, true, 3, new Vector4(2, 2, 2, 2));
+        UIFactory.SetLayoutElement(inspectContent, flexibleWidth: 9999, flexibleHeight: 9999);
 
-            if (InputManager.GetKeyDown(ConfigManager.UI_MouseInspect_Keybind.Value))
-                Instance.StartInspect(MouseInspectMode.UI);
+        // Title text
 
-            if (Inspecting)
-                UpdateInspect();
+        Text title = UIFactory.CreateLabel(inspectContent,
+            "InspectLabel",
+            "<b>Mouse Inspector</b> (press <b>ESC</b> to cancel)",
+            TextAnchor.MiddleCenter);
+        UIFactory.SetLayoutElement(title.gameObject, flexibleWidth: 9999);
 
-            return Inspecting;
-        }
+        mousePosLabel = UIFactory.CreateTMPLabel(inspectContent, "MousePosLabel", "Mouse Position:", TextAlignmentOptions.Center);
 
-        public void UpdateInspect()
-        {
-            if (InputManager.GetKeyDown(KeyCode.Escape))
-            {
-                StopInspect();
-                return;
-            }
+        objNameLabel = UIFactory.CreateTMPLabel(inspectContent, "HitLabelObj", "No hits...", TextAlignmentOptions.Left);
+        objNameLabel.textWrappingMode = TextWrappingModes.NoWrap;
 
-            if (InputManager.GetMouseButtonDown(0))
-            {
-                CurrentInspector.OnSelectMouseInspect();
-                StopInspect();
-                return;
-            }
+        objPathLabel = UIFactory.CreateTMPLabel(inspectContent, "PathLabel", "", TextAlignmentOptions.Left);
+        objPathLabel.fontStyle = FontStyles.Italic;
+        objPathLabel.textWrappingMode = TextWrappingModes.Normal;
 
-            Vector3 mousePos = InputManager.MousePosition;
-            if (mousePos != lastMousePos)
-                UpdatePosition(mousePos);
+        UIFactory.SetLayoutElement(objPathLabel.gameObject, minHeight: 75);
 
-            if (!timeOfLastRaycast.OccuredEarlierThan(0.1f))
-                return;
-            timeOfLastRaycast = Time.realtimeSinceStartup;
+        UIRoot.SetActive(false);
 
-            CurrentInspector.UpdateMouseInspect(mousePos);
-        }
-
-        internal void UpdatePosition(Vector2 mousePos)
-        {
-            lastMousePos = mousePos;
-
-            // use the raw mouse pos for the label
-            mousePosLabel.text = $"<color=grey>Mouse Position:</color> {mousePos.ToString()}";
-
-            // constrain the mouse pos we use within certain bounds
-            if (mousePos.x < 350)
-                mousePos.x = 350;
-            if (mousePos.x > Screen.width - 350)
-                mousePos.x = Screen.width - 350;
-            if (mousePos.y < Rect.rect.height)
-                mousePos.y += Rect.rect.height + 10;
-            else
-                mousePos.y -= 10;
-
-            // calculate and set our UI position
-            Vector3 inversePos = inspectorUIBase.RootObject.transform.InverseTransformPoint(mousePos);
-            UIRoot.transform.localPosition = new Vector3(inversePos.x, inversePos.y, 0);
-        }
-
-        // UI Construction
-
-        public override void SetDefaultSizeAndPosition()
-        {
-            base.SetDefaultSizeAndPosition();
-
-            Rect.anchorMin = Vector2.zero;
-            Rect.anchorMax = Vector2.zero;
-            Rect.pivot = new Vector2(0.5f, 1);
-            Rect.sizeDelta = new Vector2(700, 150);
-        }
-
-        protected override void ConstructPanelContent()
-        {
-            // hide title bar
-            this.TitleBar.SetActive(false);
-            this.UIRoot.transform.SetParent(UIManager.UIRoot.transform, false);
-
-            GameObject inspectContent = UIFactory.CreateVerticalGroup(this.ContentRoot, "InspectContent", true, true, true, true, 3, new Vector4(2, 2, 2, 2));
-            UIFactory.SetLayoutElement(inspectContent, flexibleWidth: 9999, flexibleHeight: 9999);
-
-            // Title text
-
-            Text title = UIFactory.CreateLabel(inspectContent,
-                "InspectLabel",
-                "<b>Mouse Inspector</b> (press <b>ESC</b> to cancel)",
-                TextAnchor.MiddleCenter);
-            UIFactory.SetLayoutElement(title.gameObject, flexibleWidth: 9999);
-
-            mousePosLabel = UIFactory.CreateLabel(inspectContent, "MousePosLabel", "Mouse Position:", TextAnchor.MiddleCenter);
-
-            objNameLabel = UIFactory.CreateLabel(inspectContent, "HitLabelObj", "No hits...", TextAnchor.MiddleLeft);
-            objNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
-
-            objPathLabel = UIFactory.CreateLabel(inspectContent, "PathLabel", "", TextAnchor.MiddleLeft);
-            objPathLabel.fontStyle = FontStyle.Italic;
-            objPathLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
-
-            UIFactory.SetLayoutElement(objPathLabel.gameObject, minHeight: 75);
-
-            UIRoot.SetActive(false);
-
-            //// Create a new canvas for this panel to live on.
-            //// It needs to always be shown on the main display, other panels can move displays.
-            //
-            //UIRoot.transform.SetParent(inspectorUIBase.RootObject.transform);
-        }
+        //// Create a new canvas for this panel to live on.
+        //// It needs to always be shown on the main display, other panels can move displays.
+        //
+        //UIRoot.transform.SetParent(inspectorUIBase.RootObject.transform);
     }
 }

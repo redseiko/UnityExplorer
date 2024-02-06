@@ -53,7 +53,7 @@ public class MouseInspectorResultsPanel : UEPanel
             return;
 
         GameObject obj = UiInspector.LastHitObjects[index];
-        cell.Button.ButtonTMPText.text = $"<color=cyan>{obj.name}</color> ({obj.transform.GetTransformPath(true)})";
+        cell.Button.ButtonTMPText.text = $"<color=#00FFFFFF>{obj.name}</color> ({obj.transform.GetTransformPath(true)})";
     }
 
     public override void SetDefaultSizeAndPosition()
